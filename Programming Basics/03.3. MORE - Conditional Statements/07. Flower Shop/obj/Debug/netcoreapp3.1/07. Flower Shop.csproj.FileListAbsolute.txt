@@ -1,0 +1,11 @@
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\bin\Debug\netcoreapp3.1\07. Flower Shop.exe
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\bin\Debug\netcoreapp3.1\07. Flower Shop.deps.json
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\bin\Debug\netcoreapp3.1\07. Flower Shop.runtimeconfig.json
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\bin\Debug\netcoreapp3.1\07. Flower Shop.runtimeconfig.dev.json
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\bin\Debug\netcoreapp3.1\07. Flower Shop.dll
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\bin\Debug\netcoreapp3.1\07. Flower Shop.pdb
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\obj\Debug\netcoreapp3.1\07. Flower Shop.csprojAssemblyReference.cache
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\obj\Debug\netcoreapp3.1\07. Flower Shop.AssemblyInfoInputs.cache
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\obj\Debug\netcoreapp3.1\07. Flower Shop.AssemblyInfo.cs
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\obj\Debug\netcoreapp3.1\07. Flower Shop.dll
+C:\Users\Gradev\source\repos\3.3. MORE - Conditional Statements\07. Flower Shop\obj\Debug\netcoreapp3.1\07. Flower Shop.pdb
