@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01. Task", "01. Task\01. Task.csproj", "{55C4208E-BA4E-460E-A305-5583F2F2AA14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02. Task", "02. Task\02. Task.csproj", "{6EDB1DB5-13DF-4936-9063-1CEEFB479454}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03. Task", "03. Task\03. Task.csproj", "{4EA4C4CC-0DE3-4BB8-8674-F3BD89910B78}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55C4208E-BA4E-460E-A305-5583F2F2AA14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55C4208E-BA4E-460E-A305-5583F2F2AA14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55C4208E-BA4E-460E-A305-5583F2F2AA14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55C4208E-BA4E-460E-A305-5583F2F2AA14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EDB1DB5-13DF-4936-9063-1CEEFB479454}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EDB1DB5-13DF-4936-9063-1CEEFB479454}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EDB1DB5-13DF-4936-9063-1CEEFB479454}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EDB1DB5-13DF-4936-9063-1CEEFB479454}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EA4C4CC-0DE3-4BB8-8674-F3BD89910B78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA4C4CC-0DE3-4BB8-8674-F3BD89910B78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EA4C4CC-0DE3-4BB8-8674-F3BD89910B78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EA4C4CC-0DE3-4BB8-8674-F3BD89910B78}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EBFBAFC8-2ABB-4188-B902-B42DB3B9E3A0}
+	EndGlobalSection
+EndGlobal
