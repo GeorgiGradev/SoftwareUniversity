@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30517.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.RecursiveArraySum", "01.RecursiveArraySum\01.RecursiveArraySum.csproj", "{C09A2CF3-D1AD-41A2-8744-5DA0819C2502}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.RecursiveFactorial", "02.RecursiveFactorial\02.RecursiveFactorial.csproj", "{4C5C68AB-B0AC-485F-A208-DF8F916F428A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.SumOfCoins", "03.SumOfCoins\03.SumOfCoins.csproj", "{9E4C81FE-B864-4BF3-93D0-4FAC954B2739}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.SetCover", "04.SetCover\04.SetCover.csproj", "{ACEA5713-78A5-46BE-A17B-DBD811AD3906}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.MergeSort", "05.MergeSort\05.MergeSort.csproj", "{3E841B63-790C-44EA-B33E-42CE1D3AA91A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06.Quicksort", "06.Quicksort\06.Quicksort.csproj", "{DE1FB88D-7A6B-4F55-AF97-2798D0D3F08F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "07.BinarySearch", "07.BinarySearch\07.BinarySearch.csproj", "{625574FC-EAFD-4C3C-910F-E5AF4A5AD2A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C09A2CF3-D1AD-41A2-8744-5DA0819C2502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C09A2CF3-D1AD-41A2-8744-5DA0819C2502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C09A2CF3-D1AD-41A2-8744-5DA0819C2502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C09A2CF3-D1AD-41A2-8744-5DA0819C2502}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C5C68AB-B0AC-485F-A208-DF8F916F428A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C5C68AB-B0AC-485F-A208-DF8F916F428A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C5C68AB-B0AC-485F-A208-DF8F916F428A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C5C68AB-B0AC-485F-A208-DF8F916F428A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E4C81FE-B864-4BF3-93D0-4FAC954B2739}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E4C81FE-B864-4BF3-93D0-4FAC954B2739}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E4C81FE-B864-4BF3-93D0-4FAC954B2739}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E4C81FE-B864-4BF3-93D0-4FAC954B2739}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACEA5713-78A5-46BE-A17B-DBD811AD3906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACEA5713-78A5-46BE-A17B-DBD811AD3906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACEA5713-78A5-46BE-A17B-DBD811AD3906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACEA5713-78A5-46BE-A17B-DBD811AD3906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E841B63-790C-44EA-B33E-42CE1D3AA91A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E841B63-790C-44EA-B33E-42CE1D3AA91A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E841B63-790C-44EA-B33E-42CE1D3AA91A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E841B63-790C-44EA-B33E-42CE1D3AA91A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE1FB88D-7A6B-4F55-AF97-2798D0D3F08F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE1FB88D-7A6B-4F55-AF97-2798D0D3F08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE1FB88D-7A6B-4F55-AF97-2798D0D3F08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE1FB88D-7A6B-4F55-AF97-2798D0D3F08F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{625574FC-EAFD-4C3C-910F-E5AF4A5AD2A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{625574FC-EAFD-4C3C-910F-E5AF4A5AD2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{625574FC-EAFD-4C3C-910F-E5AF4A5AD2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{625574FC-EAFD-4C3C-910F-E5AF4A5AD2A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D9B5342-DDBF-4D77-9D1D-D88C8F818534}
+	EndGlobalSection
+EndGlobal
