@@ -1,5 +1,5 @@
 # SoftUni Software Engineering
-# <p align="center">Courses from the software engineering program in SoftUni<p>
+# <p align="center">Courses from the Software Engineering Program in SoftUni<p>
 
 <a href="https://softuni.bg/trainings/courses" rel="Courses">  ![SoftUni logo][logo] <a/>
 
