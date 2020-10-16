@@ -8,7 +8,7 @@
 <br/>
 <br/>
 <br/>
-|
+
 <h2> Certificates </h2>
 
 |**Course**|**Link**| 
