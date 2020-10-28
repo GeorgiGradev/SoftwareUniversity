@@ -1,80 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace _07._SoftUni_Party
+namespace _7.SoftUniParty
 {
-    class Program
+    public class StartUp
     {
-        static void Main(string[] args)
+        public static void Main()
         {
-            HashSet<string> set = new HashSet<string>();
-            bool isVip = false;
-            while (true)
-            {
-                string invitedGuest = Console.ReadLine();
-                if (invitedGuest == "PARTY")
-                {
-                    break;
-                }
-                else if (invitedGuest.Length == 8)
-                {
-                    set.Add(invitedGuest);
-                }
-            }
-
+            HashSet<string> regularGuests = new HashSet<string>();
+            HashSet<string> vipGuests = new HashSet<string>();
 
             while (true)
             {
-                string arrivedGuest = Console.ReadLine();
-                if (arrivedGuest == "END")
+                string line = Console.ReadLine();
+
+                if (line == "PARTY")
                 {
                     break;
                 }
-                else if (set.Contains(arrivedGuest))
+
+                if (char.IsDigit(line[0]))
                 {
-                    set.Remove(arrivedGuest);
-                }
-            }
-
-
-
-            Console.WriteLine(set.Count());
-            if (set.Count() > 0)
-            {
-                foreach (var item in set)
-                {
-                    for (int i = 0; i < item.Length; i++)
-                    {
-                        char firstLetter = item[0];
-                        if (Char.IsDigit(firstLetter))
-                        {
-                            isVip = true;
-                        }
-                    }
-                }
-
-                if (isVip)
-                {
-                    set.OrderBy(x => x);
-                    foreach (var item in set)
-                    {
-                        Console.WriteLine(item);
-                    }
-
+                    vipGuests.Add(line);
                 }
                 else
                 {
-                    foreach (var item in set)
-                    {
-                        Console.WriteLine(item);
-                    }
+                    regularGuests.Add(line);
                 }
             }
 
+            while (true)
+            {
+                string line = Console.ReadLine();
 
+                if (line == "END")
+                {
+                    break;
+                }
 
+                if (vipGuests.Contains(line))
+                {
+                    vipGuests.Remove(line);
+                }
+                else if (regularGuests.Contains(line))
+                {
+                    regularGuests.Remove(line);
+                }
+            }
+
+            int total = regularGuests.Count + vipGuests.Count;
+            Console.WriteLine(total);
+
+            foreach (var vipGuest in vipGuests)
+            {
+                Console.WriteLine(vipGuest);
+            }
+
+            foreach (var guest in regularGuests)
+            {
+                Console.WriteLine(guest);
+            }
         }
     }
 }
-
