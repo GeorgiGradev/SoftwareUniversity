@@ -1,78 +1,52 @@
-﻿using _04.PizzaCalories.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 
-namespace _04.PizzaCalories
+namespace PizzaCalories
 {
     public class StartUp
     {
-        static void Main(string[] args)
+        public static void Main()
         {
-
-            string[] pizzaNameInput = Console.ReadLine().Split();
-            string pizzaName = pizzaNameInput[1];
-
-            string[] inputArgs = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries).ToArray();
-            string flourType = inputArgs[1];
-            string backingTechnique = inputArgs[2];
-            double weightGrams = double.Parse(inputArgs[3]);
-            double totalCalories = 0;
-            List<Topping> toppingList = new List<Topping>();
-
-
             try
             {
-                Dough dough = new Dough(flourType, backingTechnique, weightGrams);
-                //totalCalories += double.Parse(dough.TotalCalories());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return;
-            }
+                string[] inputPizza = Console.ReadLine()
+                        .Split(new char[] { ' ' })
+                        .ToArray();
 
-            string input;
-            while ((input = Console.ReadLine()) != "END")
-            {
-                inputArgs = input.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToArray();
-                string toppingName = inputArgs[1]; 
-                weightGrams = double.Parse(inputArgs[2]);
+                string[] doughInput = Console.ReadLine()
+                    .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                    .ToArray();
 
-                try
-                {
-                    Topping topping = new Topping(toppingName, weightGrams);
-                    //totalCalories += double.Parse(topping.TotalCalories());
-                    toppingList.Add(topping);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    return;
-                }
+                string pizzaName = inputPizza[1];
+                string flourType = doughInput[1];
+                string bakingTechnique = doughInput[2];
+                decimal flourWeight = decimal.Parse(doughInput[3]);
 
-                if(toppingList.Count > 10)
+                Pizza pizza = new Pizza(pizzaName);
+                pizza.Dough = new Dough(flourType, bakingTechnique, flourWeight);
+
+                string command = Console.ReadLine();
+
+                while (command != "END")
                 {
-                    Console.WriteLine("Number of toppings should be in range [0..10].");
-                    return;
+                    string[] toppingInput = command
+                        .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                        .ToArray();
+                    string toppingType = toppingInput[1];
+                    decimal toppingWeight = decimal.Parse(toppingInput[2]);
+
+                    Topping topping = new Topping(toppingType, toppingWeight);
+                    pizza.AddTopping(topping);
+
+                    command = Console.ReadLine();
                 }
 
+                Console.WriteLine(pizza);
             }
-
-            try
+            catch (Exception exception)
             {
-                Pizza pizza = new Pizza(pizzaName, toppingList);
-                Console.WriteLine($"{pizzaName} - {totalCalories:f2} Calories.");
+                Console.WriteLine(exception.Message);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-
-
-
-
         }
     }
 }
