@@ -1,16 +1,13 @@
-﻿ using PlayersAndMonsters.Models.Cards.Contracts;
-
-namespace PlayersAndMonsters.Models.Cards
+﻿namespace PlayersAndMonsters.Models.Cards
 {
-    public class MagicCard : Card, ICard
+    public class MagicCard : Card
     {
-        private const int MagicCardInitialDamagePoints = 5;
-        private const int MagicCardInitialHealthPoints = 80;
+        private const int InitialDamagePoints = 5;
+        private const int InitialHealthPoints = 80;
 
         public MagicCard(string name) 
-            : base(name, MagicCardInitialDamagePoints, MagicCardInitialHealthPoints)
+            : base(name, InitialDamagePoints, InitialHealthPoints)
         {
-
         }
     }
 }

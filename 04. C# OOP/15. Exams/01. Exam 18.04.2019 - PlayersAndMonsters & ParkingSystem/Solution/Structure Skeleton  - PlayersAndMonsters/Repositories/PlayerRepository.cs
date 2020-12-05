@@ -1,68 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using PlayersAndMonsters.Models.Players.Contracts;
-using PlayersAndMonsters.Repositories.Contracts;
-
-namespace PlayersAndMonsters.Repositories
+﻿namespace PlayersAndMonsters.Repositories
 {
+    using System;
+    using System.Linq;
+    using System.Collections.Generic;
+
+    using PlayersAndMonsters.Models.Players.Contracts;
+    using PlayersAndMonsters.Repositories.Contracts;
+
     public class PlayerRepository : IPlayerRepository
     {
-        private Dictionary<string, IPlayer> playersByUsername;
+        private ICollection<IPlayer> players; // TODO Transform to DICTIONARY if it is not working properly
 
         public PlayerRepository()
         {
-            this.playersByUsername = new Dictionary<string, IPlayer>();
+            players = new List<IPlayer>();
         }
 
-        public int Count => this.playersByUsername.Count;
-
-        public IReadOnlyCollection<IPlayer> Players =>
-            this.playersByUsername.Values.ToList().AsReadOnly();
+        public int Count => this.players.Count;
+        public IReadOnlyCollection<IPlayer> Players => this.players.ToList().AsReadOnly();
 
         public void Add(IPlayer player)
         {
-            this.ThrowIfPlayerIsNull(
-                player,
-                "Player cannot be null");
-
-            if (this.playersByUsername.ContainsKey(player.Username))
+            if (player is null)
             {
-                throw new ArgumentException(
-                    $"Player {player.Username} already exists!");
+                throw new ArgumentException("Player cannot be null");
             }
-
-            this.playersByUsername.Add(player.Username, player);
+            string playerName = player.Username;
+            if (players.Any(x=>x.Username == playerName))
+            {
+                throw new ArgumentException($"Player {playerName} already exists!");
+            }
+            players.Add(player);
         }
-
 
         public bool Remove(IPlayer player)
         {
-            this.ThrowIfPlayerIsNull(
-                player,
-                "Player cannot be null");
-
-            return this.playersByUsername.Remove(player.Username);
+            if (player is null)
+            {
+                throw new ArgumentException("Player cannot be null");
+            }
+            return players.Remove(player);
         }
 
         public IPlayer Find(string username)
         {
             IPlayer player = null;
-
-            if (this.playersByUsername.ContainsKey(username))
+            if (players.Any(x => x.Username == username))
             {
-                player = this.playersByUsername[username];
+                player = players.FirstOrDefault(x => x.Username == username);
             }
-
             return player;
-        }
-
-        private void ThrowIfPlayerIsNull(IPlayer player, string message)
-        {
-            if (player == null)
-            {
-                throw new ArgumentException(message);
-            }
         }
     }
 }

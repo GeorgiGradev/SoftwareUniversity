@@ -1,5 +1,6 @@
-﻿ using System;
-using PlayersAndMonsters.IO.Contracts;
+﻿using PlayersAndMonsters.IO.Contracts;
+using System;
+
 
 namespace PlayersAndMonsters.IO
 {

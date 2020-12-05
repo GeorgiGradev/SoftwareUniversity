@@ -1,15 +1,13 @@
-﻿using PlayersAndMonsters.Models.Cards.Contracts;
-
-namespace PlayersAndMonsters.Models.Cards
+﻿namespace PlayersAndMonsters.Models.Cards
 {
-    public class TrapCard : Card, ICard
+    public class TrapCard : Card
     {
-        private const int TrapCardInitialDamagePoints = 120;
-        private const int TrapCardInitialHealthPoints = 5;
-        public TrapCard(string name) 
-            : base(name, TrapCardInitialDamagePoints, TrapCardInitialHealthPoints)
-        {
+        private const int InitialDamagePoints = 120;
+        private const int InitialHealthPoints = 5;
 
+        public TrapCard(string name) 
+            : base(name, InitialDamagePoints, InitialHealthPoints)
+        {
         }
     }
 }

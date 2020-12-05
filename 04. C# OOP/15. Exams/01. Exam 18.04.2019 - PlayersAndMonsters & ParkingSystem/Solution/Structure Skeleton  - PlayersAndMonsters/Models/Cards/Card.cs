@@ -1,8 +1,9 @@
-﻿using System;
-using PlayersAndMonsters.Models.Cards.Contracts;
-
-namespace PlayersAndMonsters.Models.Cards
+﻿namespace PlayersAndMonsters.Models.Cards
 {
+    using System;
+    
+    using PlayersAndMonsters.Models.Cards.Contracts;
+
     public abstract class Card : ICard
     {
         private string name;
@@ -11,9 +12,9 @@ namespace PlayersAndMonsters.Models.Cards
 
         protected Card(string name, int damagePoints, int healthPoints)
         {
-            this.Name = name;
-            this.DamagePoints = damagePoints;
-            this.HealthPoints = healthPoints;
+            Name = name;
+            DamagePoints = damagePoints;
+            HealthPoints = healthPoints;
         }
 
         public string Name
@@ -23,10 +24,8 @@ namespace PlayersAndMonsters.Models.Cards
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException(
-                        "Card's name cannot be null or an empty string.");
+                    throw new ArgumentException("Card's name cannot be null or an empty string.");
                 }
-
                 this.name = value;
             }
         }
@@ -38,14 +37,11 @@ namespace PlayersAndMonsters.Models.Cards
             {
                 if (value < 0)
                 {
-                    throw new ArgumentException(
-                        "Card's damage points cannot be less than zero.");
+                    throw new ArgumentException("Card's damage points cannot be less than zero.");
                 }
-
                 this.damagePoints = value;
             }
         }
-
         public int HealthPoints
         {
             get => this.healthPoints;
@@ -53,12 +49,11 @@ namespace PlayersAndMonsters.Models.Cards
             {
                 if (value < 0)
                 {
-                    throw new ArgumentException(
-                        "Card's HP cannot be less than zero.");
+                    throw new ArgumentException("Card's HP cannot be less than zero.");
                 }
-
                 this.healthPoints = value;
             }
         }
+
     }
 }

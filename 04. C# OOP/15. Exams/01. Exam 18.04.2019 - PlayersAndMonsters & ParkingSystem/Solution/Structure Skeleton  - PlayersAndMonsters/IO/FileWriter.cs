@@ -1,32 +1,28 @@
-﻿using System;
+﻿using PlayersAndMonsters.IO.Contracts;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using PlayersAndMonsters.IO.Contracts;
+using System.Text;
 
 namespace PlayersAndMonsters.IO
 {
-    public class FileWriter : IWriter
+    class FileWriter : IWriter
     {
-        private FileStream fs;
-        private StreamWriter sw;
+        private readonly string filePath;
 
-        public FileWriter()
+        public FileWriter(string filePath)
         {
-            this.fs = new FileStream("./output.txt", FileMode.OpenOrCreate, FileAccess.Write);
-            this.sw = new StreamWriter(fs);
-
-            sw.AutoFlush = true;
-
-            Console.SetOut(sw);
-        }
-
-        public void WriteLine(string message)
-        {
-            Console.WriteLine(message);
+            this.filePath = filePath;
         }
 
         public void Write(string message)
         {
-            Console.Write(message);
+            throw new NotImplementedException();
+        }
+
+        public void WriteLine(string text)
+        {
+            File.AppendAllText(this.filePath, text + Environment.NewLine);
         }
     }
 }

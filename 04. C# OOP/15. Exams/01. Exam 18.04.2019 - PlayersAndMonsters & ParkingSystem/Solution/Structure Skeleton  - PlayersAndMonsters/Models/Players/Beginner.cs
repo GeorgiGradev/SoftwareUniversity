@@ -1,16 +1,15 @@
-﻿
-using PlayersAndMonsters.Models.Players.Contracts;
-using PlayersAndMonsters.Repositories.Contracts;
-
-namespace PlayersAndMonsters.Models.Players
+﻿namespace PlayersAndMonsters.Models.Players
 {
-    public class Beginner : Player, IPlayer
-    {
-        private const int BeginnerPlayerInitialHealth = 50;
-        public Beginner(ICardRepository cardRepository, string username) 
-            : base(cardRepository, username, BeginnerPlayerInitialHealth)
-        {
+    using PlayersAndMonsters.Models.Players.Contracts;
+    using PlayersAndMonsters.Repositories.Contracts;
 
+    public class Beginner : Player
+    {
+        private const int InitialHealthPoints = 50;
+
+        public Beginner(ICardRepository cardRepository, string username) 
+            : base(cardRepository, username, InitialHealthPoints)
+        {
         }
     }
 }
