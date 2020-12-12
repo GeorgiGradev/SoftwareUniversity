@@ -1,0 +1,14 @@
+Added White (Bread) to the menu
+Added Spring (Divna) to the drink menu
+Added table number 1 in the bakery
+Added table number 2 in the bakery
+Table 1 has been reserved for 5 people
+Table 1 ordered White
+Table 1 ordered Spring Divna
+Table: 2
+Type: OutsideTable
+Capacity: 20
+Price per Person: 3.50
+Table: 1
+Bill: 16.90
+Total income: 16.90lv
