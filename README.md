@@ -11,7 +11,7 @@
 
 |**Courses**|| 
 |---|---|
-|<a href="https://softuni.bg/trainings/2768/programming-basics-with-c-sharp-february-2020" > Programming Basics </a>   | <a href="https://softuni.bg/certificates/certificates/converttoimage/78269?code=a530cc62"> Certificate</a> |
-|<a href="https://softuni.bg/trainings/2830/csharp-fundamentals-may-2020"> Programming Fundamentals </a>| <a href="https://softuni.bg/certificates/certificates/converttoimage/86139?code=e3e9bca2"> Certificate</a> |
-|<a href="https://softuni.bg/trainings/3007/csharp-advanced-september-2020"> C# Advanced </a>| <a href="https://softuni.bg/certificates/certificates/converttoimage/90305?code=9b30f535"> Certificate</a> |
+|<a href="https://softuni.bg/trainings/2768/programming-basics-with-c-sharp-february-2020" > Programming Basics </a>   | <a href="https://softuni.bg/certificates/details/78269/a530cc62"> Certificate</a> |
+|<a href="https://softuni.bg/trainings/2830/csharp-fundamentals-may-2020"> Programming Fundamentals </a>| <a href="https://softuni.bg/certificates/details/86139/e3e9bca2"> Certificate</a> |
+|<a href="https://softuni.bg/trainings/3007/csharp-advanced-september-2020"> C# Advanced </a>| <a href="https://softuni.bg/certificates/details/90305/9b30f535"> Certificate</a> |
 |<a href="https://softuni.bg/trainings/3008/csharp-oop-october-2020"> C# OOP (Object-Oriented Programming) </a>| <a href=""> Certificate</a> |
