@@ -17,4 +17,11 @@ SELECT
 	FROM [Peaks], [Rivers]
 	WHERE RIGHT(Peaks.PeakName, 1) = LEFT(Rivers.RiverName,1)
 	ORDER BY [Mix]
+--SELECT
+--	[PeakName]
+--	,[RiverName],
+--	LOWER(CONCAT(Peaks.PeakName, SUBSTRING(Rivers.RiverName, 2, LEN(Rivers.RiverName) - 1))) AS [Mix]
+--	FROM [Peaks]
+--	JOIN [Rivers] ON RIGHT(Peaks.PeakName, 1) = LEFT(Rivers.RiverName,1)
+--	ORDER BY [Mix]
 
