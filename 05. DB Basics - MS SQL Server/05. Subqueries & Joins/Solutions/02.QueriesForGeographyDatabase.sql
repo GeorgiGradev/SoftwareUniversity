@@ -72,8 +72,9 @@ SELECT
 	WHERE CurrencyRank = 1 -- d
 	ORDER BY ContinentCode -- a
 
---- 16.Countries without Any Mountains ---
 
+
+--- 16.Countries without Any Mountains ---
 SELECT
 	COUNT(qwerty.CountryCode) AS [Count]
 	FROM (SELECT 
@@ -84,4 +85,95 @@ SELECT
 	LEFT JOIN Mountains ON MountainsCountries.MountainId = Mountains.Id
 	WHERE Mountains.Id IS NULL) as qwerty
 
+--SELECT 
+--	COUNT(*) 
+--	FROM Countries AS c
+--	LEFT OUTER JOIN MountainsCountries AS mc ON c.CountryCode = mc.CountryCode
+--	WHERE mc.CountryCode IS NULL
+
+
+--- 17.Highest Peak and Longest River by Country ---
+SELECT TOP(5)
+	Countries.CountryName AS CountryName,
+	MAX(Peaks.Elevation) AS HighestPeakElevation,
+	MAX(Rivers.[Length]) AS LongestRiverLength
+	FROM Peaks
+	LEFT JOIN Mountains ON Mountains.Id = Peaks.MountainId
+	LEFT JOIN MountainsCountries ON Mountains.Id = MountainsCountries.MountainId
+	RIGHT JOIN Countries ON MountainsCountries.CountryCode = Countries.CountryCode 
+	LEFT JOIN CountriesRivers ON Countries.CountryCode = CountriesRivers.CountryCode
+	LEFT JOIN Rivers ON CountriesRivers.RiverId = Rivers.Id
+	GROUP BY Countries.CountryName
+	ORDER BY HighestPeakElevation DESC,
+			   LongestRiverLength DESC, 
+			      Countries.CountryName
+
+--SELECT TOP(5)
+--	CountryName,
+--	MAX(p.Elevation) AS HighestPeakElevation,
+--	MAX(r.[Length]) AS LongestRiverLength
+--	FROM Countries AS c
+--	LEFT OUTER JOIN CountriesRivers AS cr ON c.CountryCode = cr.CountryCode
+--	LEFT OUTER JOIN Rivers AS r ON cr.RiverId = r.Id
+--	LEFT OUTER JOIN MountainsCountries AS mc ON c.CountryCode = mc.CountryCode
+--	LEFT OUTER JOIN Mountains AS m ON mc.MountainId = m.Id
+--	LEFT OUTER JOIN Peaks AS p ON m.Id = p.MountainId
+--	GROUP BY c.CountryName
+--	ORDER BY HighestPeakElevation DESC,
+--			   LongestRiverLength DESC,
+--			     CountryName ASC
+
+
+--- 18.Highest Peak Name and Elevation by Country ---
+
+SELECT TOP (5)
+	Country, 
+	[Highest Peak Name],
+	[Highest Peak Elevation], 
+	Mountain
+	FROM (SELECT 
+	*,
+	DENSE_RANK () OVER (PARTITION BY Country ORDER BY [Highest Peak Elevation] DESC) AS [Rank]
+	FROM (SELECT 
+		Countries.CountryName AS Country,
+		CASE
+			WHEN Peaks.PeakName IS NULL THEN '(no highest peak)'
+			ELSE Peaks.PeakName
+		END AS [Highest Peak Name],
+		CASE
+			WHEN Peaks.Elevation IS NULL THEN '0'
+			ELSE Peaks.Elevation
+		END AS [Highest Peak Elevation],
+		CASE
+			WHEN Mountains.MountainRange IS NULL THEN '(no mountain)' 
+			ELSE Mountains.MountainRange 
+		END AS Mountain
+		FROM Countries
+		LEFT JOIN MountainsCountries ON Countries.CountryCode = MountainsCountries.CountryCode
+		LEFT JOIN Mountains ON MountainsCountries.MountainId = Mountains.Id
+		LEFT JOIN Peaks ON Mountains.Id = Peaks.MountainId)  AS RankingQuery) as FinalQuery
+	WHERE [Rank] = 1
+	ORDER BY Country ASC, [Highest Peak Name] ASC
+
+
+--SELECT  TOP (5)
+--			  Country,
+--              ISNULL(PeakName, '(no highest peak)') AS HighestPeakName,
+--	          ISNULL(Elevation, 0) AS HighestPeakElevation,
+--	          ISNULL(MountainRange, '(no mountain)') AS MountainRange
+--FROM (SELECT *,
+--            DENSE_RANK() OVER (PARTITION BY Country ORDER BY Elevation DESC) AS PeakRank
+--      FROM (SELECT CountryName AS Country,
+--      		   p.PeakName,
+--      		   p.Elevation,
+--      		   m.MountainRange
+--      	  FROM Countries AS c
+--      	  LEFT OUTER JOIN MountainsCountries AS mc ON c.CountryCode = mc.CountryCode
+--      	  LEFT OUTER JOIN Mountains AS m ON mc.MountainId = m.Id
+--      	  LEFT OUTER JOIN Peaks AS p ON m.Id = p.MountainId
+--      	 ) AS FullCountryMountainInfo
+--	 ) AS PeaksRankingQuery
+--WHERE PeakRank = 1
+--ORDER BY Country ASC,
+--		 HighestPeakName ASC
 
