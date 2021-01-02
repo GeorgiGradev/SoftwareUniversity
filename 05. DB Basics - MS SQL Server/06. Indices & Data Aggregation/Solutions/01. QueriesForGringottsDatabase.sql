@@ -155,9 +155,37 @@ SELECT
 	WHERE wd.DepositGroup = 'Troll Chest'
 	GROUP BY SUBSTRING(wd.FirstName,1,1)
 
+--SELECT 
+--	LEFT(FirstName, 1) AS FirstLetter 
+--	FROM WizzardDeposits
+--	WHERE DepositGroup = 'Troll Chest'
+--	GROUP BY LEFT(FirstName, 1)
+--	ORDER BY FirstLetter ASC
+
+
+--- 11.Average Interest ---
+
+
 SELECT 
-	LEFT(FirstName, 1) AS FirstLetter 
-	FROM WizzardDeposits
-	WHERE DepositGroup = 'Troll Chest'
-	GROUP BY LEFT(FirstName, 1)
-	ORDER BY FirstLetter ASC
+		wd.DepositGroup, 
+		wd.IsDepositExpired,
+		AVG(wd.DepositInterest) AS AverageInterest 
+		FROM WizzardDeposits AS wd
+		WHERE wd.DepositStartDate > '01-01-1985'
+		GROUP BY wd.DepositGroup, wd.IsDepositExpired
+		ORDER BY wd.DepositGroup DESC
+
+
+
+--- 12.* Rich Wizard, Poor Wizard ---
+SELECT 
+	SUM(HostWizardDeposit - GuestWizardDeposit) AS SumDifference
+	FROM (SELECT 
+		DepositAmount AS HostWizardDeposit,
+        LEAD(DepositAmount) OVER (ORDER BY Id) AS GuestWizardDeposit
+        FROM WizzardDeposits) AS WizzardsDiff
+
+--SELECT 
+--	SUM(host.DepositAmount - guest.DepositAmount) AS SumDifference
+--	FROM WizzardDeposits AS host
+--	JOIN WizzardDeposits AS guest ON guest.Id = host.Id + 1
