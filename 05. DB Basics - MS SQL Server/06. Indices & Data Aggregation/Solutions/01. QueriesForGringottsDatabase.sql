@@ -81,10 +81,12 @@ SELECT
 	ORDER BY SUM(DepositAmount) DESC
 
 --SELECT * 
---FROM (SELECT DepositGroup, SUM(DepositAmount) AS TotalSum FROM WizzardDeposits
---      WHERE MagicWandCreator = 'Ollivander family'
---      GROUP BY DepositGroup
---     ) AS DepositGroupsTotalSum
+--FROM (SELECT 
+	--DepositGroup, 
+	--SUM(DepositAmount) AS TotalSum 
+	--FROM WizzardDeposits
+	--WHERE MagicWandCreator = 'Ollivander family'
+	--GROUP BY DepositGroup) AS DepositGroupsTotalSum
 --WHERE TotalSum < 150000
 --ORDER BY TotalSum DESC
 
@@ -107,7 +109,6 @@ SELECT
 
 
 --- 9.Age Groups ---
-
 SELECT 
 	AgeGroup,
 	COUNT (*) AS WizzardCount
@@ -124,3 +125,39 @@ SELECT
 				FROM WizzardDeposits) AS WizzardAge
 	GROUP BY AgeGroup
 
+--SELECT
+--	CASE 
+--		WHEN Age BETWEEN 0 AND 10 THEN '[0-10]'
+--         			WHEN Age BETWEEN 11 AND 20 THEN '[11-20]'
+--         			WHEN Age BETWEEN 21 AND 30 THEN '[21-30]'
+--         			WHEN Age BETWEEN 31 AND 40 THEN '[31-40]'
+--         			WHEN Age BETWEEN 41 AND 50 THEN '[41-50]'
+--         			WHEN Age BETWEEN 51 AND 60 THEN '[51-60]'
+--         			ELSE '[61+]'
+--        END AS AgeGroup,
+--	COUNT (*) AS WizzardCount
+--	FROM WizzardDeposits
+--	GROUP BY (CASE 
+--		WHEN Age BETWEEN 0 AND 10 THEN '[0-10]'
+--         			WHEN Age BETWEEN 11 AND 20 THEN '[11-20]'
+--         			WHEN Age BETWEEN 21 AND 30 THEN '[21-30]'
+--         			WHEN Age BETWEEN 31 AND 40 THEN '[31-40]'
+--         			WHEN Age BETWEEN 41 AND 50 THEN '[41-50]'
+--         			WHEN Age BETWEEN 51 AND 60 THEN '[51-60]'
+--         			ELSE '[61+]'
+--      END)
+
+
+--- 10.First Letter ---
+SELECT 
+	SUBSTRING(wd.FirstName,1,1) as FirstLetter
+	FROM WizzardDeposits as wd
+	WHERE wd.DepositGroup = 'Troll Chest'
+	GROUP BY SUBSTRING(wd.FirstName,1,1)
+
+SELECT 
+	LEFT(FirstName, 1) AS FirstLetter 
+	FROM WizzardDeposits
+	WHERE DepositGroup = 'Troll Chest'
+	GROUP BY LEFT(FirstName, 1)
+	ORDER BY FirstLetter ASC
