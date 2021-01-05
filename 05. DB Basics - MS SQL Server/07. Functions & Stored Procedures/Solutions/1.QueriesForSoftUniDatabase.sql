@@ -26,5 +26,20 @@ BEGIN
 		WHERE Salary >= @MinSalary
 END
 GO 
+--EXEC dbo.usp_GetEmployeesSalaryAboveNumber 48100
 
-EXEC dbo.usp_GetEmployeesSalaryAboveNumber 48100
+
+--- 3.Town Names Starting With ---
+GO
+CREATE OR ALTER PROC usp_GetTownsStartingWith (@StartString NVARCHAR(20))
+AS
+BEGIN
+	SELECT 
+	[Name]
+	FROM Towns
+	WHERE [Name] LIKE @StartString + '%'
+END
+GO
+EXEC usp_GetTownsStartingWith 'be'
+
+--- 
