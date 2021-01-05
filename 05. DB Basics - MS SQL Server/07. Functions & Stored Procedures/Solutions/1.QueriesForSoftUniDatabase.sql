@@ -67,11 +67,11 @@ RETURNS NVARCHAR(10)
 AS
 BEGIN
 	DECLARE @SalaryLevel NVARCHAR(10)
-		IF (@Salary < 30000)
+		IF @Salary < 30000
 			BEGIN
 			SET @SalaryLevel = 'Low'
 			END
-		ELSE IF (@Salary >= 30000 AND @Salary <= 50000)
+		ELSE IF @Salary >= 30000 AND @Salary <= 50000
 			BEGIN
 			SET @SalaryLevel = 'Average'
 			END
@@ -82,4 +82,44 @@ BEGIN
 RETURN @SalaryLevel
 END
 GO
---SELECT dbo.ufn_GetSalaryLevel (50001)
+SELECT dbo.ufn_GetSalaryLevel (50001)
+
+
+--- 6.Employees by Salary Level ---
+GO
+CREATE OR ALTER PROC usp_EmployeesBySalaryLevel (@SalaryLevel NVARCHAR(8))
+AS
+BEGIN 
+	IF @SalaryLevel = 'Low'
+		SELECT 
+			FirstName AS [First Name],
+			LastName AS [Last Name]
+			FROM Employees
+			WHERE dbo.ufn_GetSalaryLevel ([Salary]) = 'Low'
+	ELSE IF @SalaryLevel = 'Average'
+		SELECT 
+			FirstName AS [First Name],
+			LastName AS [Last Name]
+			FROM Employees
+			WHERE dbo.ufn_GetSalaryLevel ([Salary]) = 'Average'
+	ELSE
+			SELECT 
+			FirstName AS [First Name],
+			LastName AS [Last Name]
+			FROM Employees
+			WHERE dbo.ufn_GetSalaryLevel ([Salary]) = 'High'
+END
+--EXECUTE dbo.usp_EmployeesBySalaryLevel 'High'
+ 
+
+--GO
+--CREATE OR ALTER PROCEDURE usp_EmployeesBySalaryLevel @salaryLevel VARCHAR(7)
+--AS
+--BEGIN
+--	SELECT FirstName, LastName FROM Employees
+--	WHERE dbo.ufn_GetSalaryLevel (Salary) = @salaryLevel
+--END
+--EXECUTE dbo.usp_EmployeesBySalaryLevel 'Low'
+--GO
+
+
