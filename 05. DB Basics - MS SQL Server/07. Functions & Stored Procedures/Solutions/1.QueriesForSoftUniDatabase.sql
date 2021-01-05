@@ -123,3 +123,59 @@ END
 --GO
 
 
+
+--- 7.Define Function ---
+GO
+CREATE OR ALTER FUNCTION ufn_IsWordComprised(@SetOfLetters NVARCHAR(MAX), @Word NVARCHAR(MAX))
+RETURNS BIT 
+AS
+BEGIN 
+DECLARE @WordCount INT = LEN(@Word); 
+DECLARE @Counter INT = 1;
+DECLARE @IsWordCompromised BIT
+	WHILE (@WordCount > 0)
+		BEGIN
+		DECLARE @CurrentLetter CHAR(1)
+		SET @CurrentLetter = SUBSTRING(@Word,@Counter, 1)
+			IF CHARINDEX(@CurrentLetter, @SetOfLetters) = 0
+				BEGIN
+				SET @IsWordCompromised = 0
+				RETURN @IsWordCompromised 
+				END
+		SET @Counter += 1;
+		SET @WordCount -=1;
+		END
+SET @IsWordCompromised = 1
+RETURN @IsWordCompromised 
+END
+GO
+
+--SELECT dbo.ufn_IsWordComprised ('oistmiahf', 'Sofia') -- 1
+--SELECT dbo.ufn_IsWordComprised ('oistmiahf', 'halves') --0
+--SELECT dbo.ufn_IsWordComprised ('bobr', 'Rob') -- 1
+--SELECT dbo.ufn_IsWordComprised ('pppp', 'Guy') -- 0
+
+--GO
+--CREATE FUNCTION ufn_IsWordComprised(@setOfLetters VARCHAR(50), @word VARCHAR(50)) 
+--RETURNS BIT
+--BEGIN
+--	DECLARE @counter INT = 1
+--	DECLARE @isWordComprised BIT = 1
+
+--	WHILE @counter <= LEN(@word)
+--		BEGIN
+--			DECLARE @currLetter CHAR(1) = SUBSTRING(@word, @counter, 1)
+--			DECLARE @currLetterIndex INT = CHARINDEX(@currLetter, @setOfLetters , 1)
+
+--			IF @currLetterIndex = 0
+--				BEGIN 
+--					SET @isWordComprised = 0
+--					BREAK
+--				END
+
+--			SET @counter += 1
+--		END 
+     
+--	 RETURN @isWordComprised
+--END
+--GO
