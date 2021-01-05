@@ -26,7 +26,7 @@ BEGIN
 		WHERE Salary >= @MinSalary
 END
 GO 
---EXEC dbo.usp_GetEmployeesSalaryAboveNumber 48100
+- EXEC dbo.usp_GetEmployeesSalaryAboveNumber 48100
 
 
 --- 3.Town Names Starting With ---
@@ -40,6 +40,22 @@ BEGIN
 	WHERE [Name] LIKE @StartString + '%'
 END
 GO
-EXEC usp_GetTownsStartingWith 'be'
+--EXEC usp_GetTownsStartingWith 'be'
 
---- 
+
+--- 4.Employees from Town ---
+GO 
+CREATE OR ALTER PROC usp_GetEmployeesFromTown(@TownName NVARCHAR(MAX))
+AS
+BEGIN
+	SELECT 
+		e.FirstName,
+		e.LastName
+		FROM Employees AS e
+		JOIN Addresses AS a ON e.AddressID = a.AddressID
+		JOIN Towns AS t ON a.TownID = t.TownID
+		WHERE t.[Name] = @TownName
+END
+GO
+EXEC usp_GetEmployeesFromTown 'Sofia'
+
