@@ -183,7 +183,7 @@ GO
 
 --- 8.* Delete Employees and Departments ---
 
-CREATE PROCEDURE usp_DeleteEmployeesFromDepartment (@departmentId INT)
+CREATE OR ALTER PROCEDURE usp_DeleteEmployeesFromDepartment (@departmentId INT)
 AS
 BEGIN
 	
@@ -223,11 +223,13 @@ BEGIN
    WHERE DepartmentID = @departmentId
 
    -- 07. Return 0 count if DELETE was succesfull
-   SELECT COUNT(*) FROM Employees
-   WHERE DepartmentID = @departmentId
+   SELECT 
+		COUNT(*) 
+		FROM Employees 
+		WHERE DepartmentID = @departmentId
 
 END
 
-EXECUTE dbo.usp_DeleteEmployeesFromDepartment 1
+EXECUTE dbo.usp_DeleteEmployeesFromDepartment 16
 
 GO
