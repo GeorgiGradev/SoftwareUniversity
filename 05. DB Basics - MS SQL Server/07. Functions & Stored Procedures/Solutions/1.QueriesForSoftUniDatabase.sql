@@ -179,3 +179,55 @@ GO
 --	 RETURN @isWordComprised
 --END
 --GO
+
+
+--- 8.* Delete Employees and Departments ---
+
+CREATE PROCEDURE usp_DeleteEmployeesFromDepartment (@departmentId INT)
+AS
+BEGIN
+	
+	-- 01. Delete employees from EmployeesProjects
+	DELETE FROM EmployeesProjects
+	WHERE EmployeeID IN (
+	                     SELECT EmployeeID FROM Employees
+	                     WHERE DepartmentID = @departmentId
+						)
+		                
+	-- 02. Set ManagerId to NULL in Employees
+	UPDATE Employees
+	SET ManagerID = NULL
+	WHERE ManagerID IN (
+	                     SELECT EmployeeID FROM Employees
+	                     WHERE DepartmentID = @departmentId
+						)
+
+	-- 03. Alter column ManagerID in Departments and make it NULLable
+	ALTER TABLE Departments
+	ALTER COLUMN ManagerID INT
+
+	-- 04. Set ManagerId to NULL in Departments
+	UPDATE Departments
+	SET ManagerID = NULL
+	WHERE ManagerID IN (
+	                     SELECT EmployeeID FROM Employees
+	                     WHERE DepartmentID = @departmentId
+						)
+
+   -- 05. Delete all employees from current department
+   DELETE FROM Employees
+   WHERE DepartmentID = @departmentId
+
+   -- 06. Delete current department
+   DELETE FROM Departments
+   WHERE DepartmentID = @departmentId
+
+   -- 07. Return 0 count if DELETE was succesfull
+   SELECT COUNT(*) FROM Employees
+   WHERE DepartmentID = @departmentId
+
+END
+
+EXECUTE dbo.usp_DeleteEmployeesFromDepartment 1
+
+GO
