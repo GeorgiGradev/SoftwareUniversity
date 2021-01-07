@@ -40,11 +40,29 @@ RETURNS DECIMAL(18,4)
 BEGIN
 	DECLARE @Output DECIMAL(18,4);
 	SET @Output = 
-	@InitialSum 
+	@InitialSum
 	* 
 	(POWER(1 + (@YearlyInterestRate), @NumberOfYears))
 RETURN @Output 
 END
 GO
+--SELECT dbo.ufn_CalculateFutureValue (1000, 0.1, 5)
 
-SELECT dbo.ufn_CalculateFutureValue (1000, 0.1, 5)
+
+--- 12.Calculating Interest ---
+GO
+CREATE OR ALTER PROC usp_CalculateFutureValueForAccount 
+	(@AccountID INT, 
+	@InterestRate DECIMAL(18,2))
+AS
+	SELECT 
+		a.Id AS [Account Id],
+		ah.FirstName AS [First Name],
+		ah.LastName AS [Last Name],
+		a.Balance AS [Current Balance],
+		dbo.ufn_CalculateFutureValue (a.Balance, @InterestRate, 5) AS [Balance in 5 years]
+
+		FROM Accounts as a
+		JOIN AccountHolders as ah ON a.AccountHolderId = ah.Id
+		WHERE a.Id = @AccountID
+-- EXEC dbo.usp_CalculateFutureValueForAccount 1, 0.1
