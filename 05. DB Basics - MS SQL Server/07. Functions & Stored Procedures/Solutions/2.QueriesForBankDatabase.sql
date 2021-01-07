@@ -28,3 +28,23 @@ BEGIN
 		ORDER BY ah.FirstName, ah.LastName
 END
 --EXEC dbo.usp_GetHoldersWithBalanceHigherThan 20000
+
+
+--- 11.Future Value Function ---
+GO
+CREATE OR ALTER FUNCTION ufn_CalculateFutureValue 
+	(@InitialSum DECIMAL(18,4),
+	@YearlyInterestRate FLOAT, 
+	@NumberOfYears INT)
+RETURNS DECIMAL(18,4)
+BEGIN
+	DECLARE @Output DECIMAL(18,4);
+	SET @Output = 
+	@InitialSum 
+	* 
+	(POWER(1 + (@YearlyInterestRate), @NumberOfYears))
+RETURN @Output 
+END
+GO
+
+SELECT dbo.ufn_CalculateFutureValue (1000, 0.1, 5)
