@@ -65,3 +65,63 @@ GO
 
 
 --- 3.Deposit Money ---
+--CREATE TABLE BankTable
+--(
+--	AccountId INT PRIMARY KEY IDENTITY,
+--	AccountHolderId INT NOT NULL,
+--	Balance DECIMAL(18,4)
+--)
+
+--GO
+--CREATE OR ALTER PROC usp_DepositMoney (@AccountId INT, @MoneyAmount DECIMAL(18,4)) 
+--AS
+--BEGIN TRANSACTION
+--	IF (@MoneyAmount <= 0 
+--		OR (SELECT Balance FROM Accounts AS a WHERE a.Id = @AccountId)  + @MoneyAmount < 0)
+--		BEGIN
+--			ROLLBACK;
+--			THROW 50004, 'Invalid amount value.',1
+--		END
+--	ELSE
+--		BEGIN
+--			UPDATE Accounts 
+--			SET Balance += @MoneyAmount
+--			WHERE Id = @AccountId
+
+--			INSERT INTO BankTable (AccountHolderId, Balance)
+--				SELECT 
+--					AccountHolderId, Balance
+--					FROM Accounts AS a
+--				WHERE a.Id = @AccountId
+--		END
+--COMMIT
+--GO
+
+--EXEC usp_DepositMoney 14, 10000
+
+--SELECT * FROM BankTable
+--SELECT * FROM Logs
+--SELECT * FROM NotificationEmail
+--SELECT * FROM Accounts
+
+--UPDATE Accounts
+--SET Balance -= 2000
+--WHERE Id = 14
+
+GO
+
+CREATE PROC usp_DepositMoney @AccountId INT, @MoneyAmount MONEY
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM Accounts WHERE Id = @AccountId) > 0
+	AND @MoneyAmount > 0
+		BEGIN
+			UPDATE Accounts
+			SET Balance += @MoneyAmount
+			WHERE Id = @AccountId
+		END 
+END
+
+GO
+
+--- 4.Withdraw Money ---
