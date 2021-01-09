@@ -125,3 +125,19 @@ END
 GO
 
 --- 4.Withdraw Money ---
+GO
+CREATE PROC usp_WithdrawMoney @AccountId INT, @MoneyAmount MONEY
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM Accounts WHERE Id = @AccountId) > 0
+	AND @MoneyAmount > 0
+		BEGIN
+			UPDATE Accounts
+			SET Balance -= @MoneyAmount
+			WHERE Id = @AccountId
+		END 
+END
+GO
+
+
+--- 5.Money Transfer ---
