@@ -141,3 +141,30 @@ GO
 
 
 --- 5.Money Transfer ---
+CREATE OR ALTER PROC usp_TransferMoney
+	(@SenderId INT, @ReceiverId INT, @Amount DECIMAL(18,4))
+AS
+DECLARE @SenderBalance DECIMAL(18,4);
+SET @SenderBalance = (SELECT Balance FROM Accounts as a WHERE a.AccountHolderId = @SenderId)
+BEGIN TRANSACTION
+	IF ( @SenderBalance >= @Amount AND @Amount >= 0)
+		BEGIN
+			UPDATE Accounts
+			SET Balance -= @Amount
+			WHERE Accounts.Id = @SenderId
+			UPDATE Accounts
+			SET Balance += @Amount
+			WHERE Accounts.Id = @ReceiverId
+		END
+	ELSE
+		BEGIN
+			ROLLBACK;
+			THROW 50002, 'Invalid transfer data', 1
+		END
+COMMIT
+GO
+
+EXEC usp_TransferMoney 5, 1, 20000
+
+SELECT * FROM Accounts
+SELECT * FROM Logs
