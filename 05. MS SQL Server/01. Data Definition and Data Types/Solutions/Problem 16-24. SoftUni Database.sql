@@ -1,5 +1,6 @@
 -- Problem 16. Create SoftUni Database --
 CREATE DATABASE SoftUni
+GO
 USE SoftUni
 
 CREATE TABLE Towns
@@ -78,8 +79,10 @@ SELECT FirstName, LastName, JobTitle, Salary FROM Employees ORDER BY Salary DESC
 
 
 -- Problem 22.Increase Employees Salary --
-UPDATE Employees 
+UPDATE Employees
 SET Salary += Salary * 0.1
+
+SELECT Salary FROM Employees
 
 
 -- Problem 23.	Decrease Tax Rate --
