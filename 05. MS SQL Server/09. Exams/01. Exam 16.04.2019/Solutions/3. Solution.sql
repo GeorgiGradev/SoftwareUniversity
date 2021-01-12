@@ -112,3 +112,48 @@ SELECT
 	LEFT JOIN Tickets AS t ON f.Id = t.FlightId
 	GROUP BY p.[Name], p.Seats
 	ORDER BY [Passenger Count] DESC, p.[Name], p.Seats 
+
+
+--- 11.Vacation ---
+GO
+CREATE OR ALTER FUNCTION udf_CalculateTickets
+	(@origin NVARCHAR(50), @destination NVARCHAR(50), @peopleCount INT) 
+RETURNS NVARCHAR(MAX)
+AS
+BEGIN
+	DECLARE @ReturnValue NVARCHAR(MAX);
+	IF (@peopleCount <= 0) 
+		BEGIN
+			SET @ReturnValue = 'Invalid people count!'
+		END
+	ELSE IF ((SELECT 
+			Price 
+			FROM Tickets AS t
+			JOIN Flights AS f ON t.FlightId = f.Id
+			WHERE f.Origin = @origin AND f.Destination = @destination) IS NULL)
+		BEGIN
+			SET @ReturnValue = 'Invalid flight!'
+		END
+	ELSE
+		BEGIN
+			DECLARE @TicketPrice DECIMAL(18,2) =
+		(SELECT 
+			Price 
+			FROM Tickets AS t
+			JOIN Flights AS f ON t.FlightId = f.Id
+			WHERE f.Origin = @origin AND f.Destination = @destination);
+		DECLARE @TotalPrice DECIMAL(18,2);
+		SET @TotalPrice = @TicketPrice * @peopleCount
+		SET @ReturnValue = CONCAT('Total price', ' ',@TotalPrice)
+		END
+
+RETURN @ReturnValue
+END
+GO
+
+SELECT dbo.udf_CalculateTickets('Kolyshley','Rancabolang', 33)
+SELECT dbo.udf_CalculateTickets('Kolyshley','Rancabolang', -1)
+SELECT dbo.udf_CalculateTickets('Luanda','Rancabolang', 33)
+SELECT dbo.udf_CalculateTickets('Invalid','Rancabolang', 33)
+
+
