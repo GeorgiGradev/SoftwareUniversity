@@ -116,7 +116,7 @@ SELECT
 
 --- 11.Vacation ---
 GO
-CREATE OR ALTER FUNCTION udf_CalculateTickets
+CREATE FUNCTION udf_CalculateTickets
 	(@origin NVARCHAR(50), @destination NVARCHAR(50), @peopleCount INT) 
 RETURNS NVARCHAR(MAX)
 AS
@@ -151,9 +151,26 @@ RETURN @ReturnValue
 END
 GO
 
-SELECT dbo.udf_CalculateTickets('Kolyshley','Rancabolang', 33)
-SELECT dbo.udf_CalculateTickets('Kolyshley','Rancabolang', -1)
-SELECT dbo.udf_CalculateTickets('Luanda','Rancabolang', 33)
-SELECT dbo.udf_CalculateTickets('Invalid','Rancabolang', 33)
+--SELECT dbo.udf_CalculateTickets('Kolyshley','Rancabolang', 33)
+--SELECT dbo.udf_CalculateTickets('Kolyshley','Rancabolang', -1)
+--SELECT dbo.udf_CalculateTickets('Luanda','Rancabolang', 33)
+--SELECT dbo.udf_CalculateTickets('Invalid','Rancabolang', 33)
 
 
+
+--- 12.Wrong Data ---
+GO
+CREATE PROC usp_CancelFlights
+AS
+BEGIN
+	UPDATE Flights
+		SET ArrivalTime = NULL, DepartureTime = NULL
+		WHERE DATEDIFF(SECOND, DepartureTime, ArrivalTime) <= 0
+END
+GO
+
+EXEC usp_CancelFlights
+
+
+SELECT * FROM Flights
+WHERE DATEDIFF(SECOND, DepartureTime, ArrivalTime) > 0
