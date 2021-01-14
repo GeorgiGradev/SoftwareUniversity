@@ -92,3 +92,40 @@ SELECT
 
 
 --- 10.Students to Go ---
+SELECT 
+	CONCAT(stu.FirstName, ' ' ,stu.LastName) AS [Full Name]
+	FROM Students AS stu
+	LEFT JOIN StudentsExams AS se ON stu.Id = se.StudentId
+	LEFT JOIN Exams as ex ON se.ExamId = ex.Id
+	WHERE ex.Id IS NULL
+	ORDER BY [Full Name]
+
+
+
+--- 11.Busiest Teachers ---
+SELECT TOP(10) 
+	FirstName,
+	LastName,
+	COUNT(*) AS [StudentsCount]
+	FROM (SELECT 
+			Teachers.FirstName,
+			Teachers.LastName
+			FROM Teachers
+			JOIN Subjects ON Teachers.SubjectId = Subjects.Id
+			JOIN StudentsTeachers ON Teachers.Id = StudentsTeachers.TeacherId
+		 ) AS TEMP
+	GROUP BY FirstName, LastName
+	ORDER BY [StudentsCount] DESC,
+			 FirstName ASC,
+			 LastName ASC
+
+
+--- 12.Top Students ---
+SELECT TOP (1000)
+	FirstName AS [First Name], 
+	LastName AS [Last Name],
+	FORMAT(AVG(se.Grade), 'N2') as Grade
+	FROM Students as s
+	JOIN StudentsExams as se ON s.Id = se.StudentId
+	GROUP BY FirstName, LastName
+	ORDER BY Grade DESC, [First Name], [Last Name]
