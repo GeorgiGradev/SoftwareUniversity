@@ -129,3 +129,61 @@ SELECT TOP (1000)
 	JOIN StudentsExams as se ON s.Id = se.StudentId
 	GROUP BY FirstName, LastName
 	ORDER BY Grade DESC, [First Name], [Last Name]
+
+
+--- 13.Second Highest Grade ---
+SELECT 
+	FirstName, 
+	LastName, 
+	Grade
+	FROM(SELECT
+		s.FirstName,
+	s.LastName,
+	ss.Grade,
+	DENSE_RANK() OVER (PARTITION BY FirstName, LastName ORDER BY Grade DESC) as [DanseRank]
+	FROM StudentsSubjects AS ss
+	JOIN Students AS s ON ss.StudentId = s.Id) AS TEMP
+	WHERE [DanseRank] = 2
+	ORDER BY FirstName, LastName, Grade DESC
+
+
+--- 14.Not So In The Studying ---
+SELECT 
+	CASE
+		WHEN s.MiddleName IS NULL THEN CONCAT(s.FirstName, ' ' , s.LastName)
+		ELSE CONCAT(s.FirstName,' ' , s.MiddleName, ' ', s.LastName)
+		END AS [Full Name]
+	FROM Students AS s
+	LEFT JOIN StudentsSubjects AS ss ON s.Id = ss.StudentId
+	WHERE SubjectId IS NULL
+	ORDER BY [Full Name]
+
+
+--- 15.Top Student per Teacher ---  
+SELECT 
+	j.[Teacher Full Name], 
+	j.SubjectName ,
+	j.[Student Full Name], 
+	FORMAT(j.TopGrade, 'N2') AS Grade
+		FROM (SELECT 
+			k.[Teacher Full Name],
+			k.SubjectName, 
+			k.[Student Full Name], 
+			k.AverageGrade  AS TopGrade,
+			ROW_NUMBER() OVER (PARTITION BY k.[Teacher Full Name] ORDER BY k.AverageGrade DESC) AS RowNumber
+			FROM (SELECT 
+				t.FirstName + ' ' + t.LastName AS [Teacher Full Name],
+				s.FirstName + ' ' + s.LastName AS [Student Full Name],
+				AVG(ss.Grade) AS AverageGrade,
+				su.Name AS SubjectName
+				FROM Teachers AS t 
+				JOIN StudentsTeachers AS st ON st.TeacherId = t.Id
+				JOIN Students AS s ON s.Id = st.StudentId
+				JOIN StudentsSubjects AS ss ON ss.StudentId = s.Id
+				JOIN Subjects AS su ON su.Id = ss.SubjectId AND su.Id = t.SubjectId
+				GROUP BY t.FirstName, t.LastName, s.FirstName, s.LastName, su.Name
+				) AS k
+						) AS j
+	WHERE j.RowNumber = 1 
+	ORDER BY j.SubjectName,j.[Teacher Full Name], TopGrade DESC
+
