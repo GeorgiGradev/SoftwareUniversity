@@ -16,9 +16,9 @@ SELECT TOP(30) [CountryName], [Population]
 -- 24.*Countries and Currency (Euro / Not Euro) --
 SELECT [CountryName], [CountryCode],
 		CASE	
-			WHEN CurrencyCode = 'Euro'  THEN 'Euro'
+			WHEN CurrencyCode = 'EUR'  THEN 'Euro'
 			WHEN CurrencyCode != 'Euro'  THEN 'Not Euro'
-			--ELSE 'Not Euro'
+			ELSE 'Not Euro'
 			END
 		AS [Currency]
 	FROM Countries
