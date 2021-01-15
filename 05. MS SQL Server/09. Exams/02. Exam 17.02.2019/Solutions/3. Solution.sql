@@ -267,6 +267,7 @@ BEGIN
 		END
 	RETURN @StringToReturn
 END
+
 GO
 
 SELECT dbo.udf_ExamGradesToUpdate(12, 6.20)
@@ -274,3 +275,19 @@ SELECT dbo.udf_ExamGradesToUpdate(12, 5.50)
 SELECT dbo.udf_ExamGradesToUpdate(121, 5.50)
 
 
+--- 19.Exclude from school ---
+GO
+CREATE OR ALTER PROCEDURE usp_ExcludeFromSchool(@StudentId INT)
+AS
+	IF(SELECT Id FROM Students WHERE Id = @StudentId) IS NULL
+	THROW 50001, 'This school has no student with the provided id!', 1
+
+	DELETE FROM StudentsExams WHERE StudentId = @StudentId
+	DELETE FROM StudentsSubjects WHERE StudentId =  @StudentId
+	DELETE FROM StudentsTeachers WHERE StudentId = @StudentId
+	DELETE FROM Students WHERE Id = @StudentId
+
+
+EXEC usp_ExcludeFromSchool 301
+EXEC usp_ExcludeFromSchool 2
+SELECT COUNT(*) FROM Students
