@@ -187,3 +187,51 @@ SELECT
 	WHERE j.RowNumber = 1 
 	ORDER BY j.SubjectName,j.[Teacher Full Name], TopGrade DESC
 
+
+--- 16.Average Grade per Subject ---
+--SELECT
+--	j.Name,
+--	j.Grade AS AverageGrade
+--	FROM (SELECT 
+--		s.Name,
+--		s.Id,
+--		AVG(ss.Grade) as Grade
+--		FROM Subjects as s
+--		JOIN StudentsSubjects as ss ON s.Id = ss.SubjectId
+--		GROUP BY s.Name, s.Id
+--		) as j
+--	ORDER BY j.Id
+
+SELECT 
+	s.Name,
+	s.Id,
+	AVG(ss.Grade) as Grade
+	FROM Subjects as s
+	JOIN StudentsSubjects as ss ON s.Id = ss.SubjectId
+	GROUP BY s.Name, s.Id
+	ORDER BY s.Id
+
+
+--- 17. Exams Information ---
+SELECT 
+	j.[Quarter],
+	j.SubjectName,
+	COUNT(j.Id) AS StudentsCount
+	FROM (SELECT
+			CASE 
+				WHEN DATEPART(MONTH, e.Date) IN (1,2,3) THEN 'Q1'
+				WHEN DATEPART(MONTH, e.Date) IN (4,5,6) THEN 'Q2'
+				WHEN DATEPART(MONTH, e.Date) IN (7,8,9) THEN 'Q3'
+				WHEN DATEPART(MONTH, e.Date) IN (10,11,12) THEN 'Q4'
+				WHEN e.Date IS NULL THEN 'TBA'
+			END AS [Quarter],
+			s.Name AS SubjectName, 
+			stu.Id, 
+			se.Grade
+			FROM Exams as e
+			JOIN Subjects AS s ON s.Id = e.SubjectId
+			JOIN StudentsExams AS se ON e.Id = se.ExamId
+			JOIN Students as stu ON se.StudentId = stu.Id
+			WHERE se.Grade >= 4) AS j
+	GROUP BY j.[Quarter], j.SubjectName
+	ORDER BY j.[Quarter]
