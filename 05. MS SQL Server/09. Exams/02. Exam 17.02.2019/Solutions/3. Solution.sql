@@ -235,3 +235,42 @@ SELECT
 			WHERE se.Grade >= 4) AS j
 	GROUP BY j.[Quarter], j.SubjectName
 	ORDER BY j.[Quarter]
+
+
+--- 18. Exam Grades ---
+GO
+CREATE OR ALTER FUNCTION udf_ExamGradesToUpdate(@studentId INT, @grade DECIMAL(3,2))
+RETURNS NVARCHAR(MAX)
+
+AS
+BEGIN
+	DECLARE @StringToReturn NVARCHAR(MAX)
+	IF ((SELECT Id FROM Students WHERE Id = @studentId) IS NULL)
+		BEGIN
+			SET @StringToReturn = 'The student with provided id does not exist in the school!'
+		END
+	ELSE IF (@grade >= 6) 
+		BEGIN
+			SET @StringToReturn = 'Grade cannot be above 6.00!'
+		END
+	ELSE
+		BEGIN
+			DECLARE @StudentName NVARCHAR(MAX) =
+				(SELECT FirstName FROM Students WHERE Id = @studentId)
+			DECLARE @CountOfGradesToUpdate INT = 
+				(SELECT 
+					COUNT(ss.Grade) AS Grades
+					FROM Students AS s
+					JOIN StudentsExams AS ss ON s.Id = ss.StudentId
+					WHERE @studentId = ss.StudentId AND ss.Grade >= @grade AND ss.Grade <= @grade + 0.50)
+			SET @StringToReturn = CONCAT('You have to update ',   @CountOfGradesToUpdate ,' grades for the student ', @StudentName)
+		END
+	RETURN @StringToReturn
+END
+GO
+
+SELECT dbo.udf_ExamGradesToUpdate(12, 6.20)
+SELECT dbo.udf_ExamGradesToUpdate(12, 5.50)
+SELECT dbo.udf_ExamGradesToUpdate(121, 5.50)
+
+
