@@ -2,7 +2,7 @@ USE SoftUni
 
 --- 8.Employees with Three Projects ---
 GO
-CREATE OR ALTER PROCEDURE usp_AssignProject(@employeeId INT, @projectID INT)
+CREATE PROCEDURE usp_AssignProject(@employeeId INT, @projectID INT)
 AS
 BEGIN TRANSACTION
 	INSERT INTO EmployeesProjects
@@ -59,32 +59,26 @@ GO
 
 
 --- 9.Delete Employees ---
-CREATE TABLE Deleted_Employees
-(
-	EmployeeId INT PRIMARY KEY IDENTITY, 
-	FirstName NVARCHAR(50), 
-	LastName NVARCHAR (50), 
-	MiddleName NVARCHAR(50), 
-	JobTitle NVARCHAR(50), 
-	DepartmentId INT, 
-	Salary DECIMAL(18,2)
-) 
+CREATE TABLE Deleted_Employees(
+	EmployeeId INT PRIMARY KEY IDENTITY,
+	FirstName VARCHAR(50) NOT NULL,
+	LastName VARCHAR(50) NOT NULL,
+	MiddleName VARCHAR(50),
+	JobTitle VARCHAR(50),
+	DepartmentId INT,
+	Salary MONEY
+)
 
 GO
-CREATE OR ALTER TRIGGER tr_DeletedEmployeesTrigger ON Employees INSTEAD OF DELETE
-AS
+
+CREATE TRIGGER tr_delete_Employees
+    ON Employees
+    FOR DELETE
+    AS
 BEGIN
-	INSERT INTO Deleted_Employees
-	(FirstName,LastName,MiddleName,JobTitle,DepartmentId,Salary)
-	SELECT 
-		d.FirstName,
-		d.LastName,
-		d.MiddleName,
-		d.JobTitle,
-		d.DepartmentID,
-		d.Salary
-		FROM deleted as d
-		JOIN Employees as e ON d.EmployeeID = e.EmployeeID
+    INSERT INTO Deleted_Employees(FirstName, LastName, MiddleName, JobTitle, DepartmentId, Salary)
+    SELECT FirstName, LastName, MiddleName, JobTitle, DepartmentId, Salary
+    FROM Deleted
 END
 
 DELETE 
