@@ -11,7 +11,7 @@
 --)
 
 GO
-CREATE OR ALTER TRIGGER tr_AccountChange 
+CREATE TRIGGER tr_AccountChange 
 ON Accounts FOR UPDATE
 AS
 BEGIN
@@ -24,16 +24,16 @@ GO
  
 
 --- 2.Create Table Emails ---
---CREATE TABLE NotificationEmail
---(
---	Id INT PRIMARY KEY IDENTITY,
---	Recipient INT FOREIGN KEY REFERENCES Accounts(Id),
---	[Subject] NVARCHAR(50),
---	Body NVARCHAR(MAX)
---)
+CREATE TABLE NotificationEmail
+(
+	Id INT PRIMARY KEY IDENTITY,
+	Recipient INT FOREIGN KEY REFERENCES Accounts(Id),
+	[Subject] NVARCHAR(50),
+	Body NVARCHAR(MAX)
+)
 
 GO
-CREATE OR ALTER TRIGGER tr_SendEmailOnUpdate
+CREATE TRIGGER tr_SendEmailOnUpdate
 ON Logs FOR INSERT
 AS
 BEGIN
@@ -110,9 +110,8 @@ GO
 
 GO
 
-CREATE PROC usp_DepositMoney @AccountId INT, @MoneyAmount MONEY
+CREATE PROCEDURE usp_DepositMoney @AccountId INT, @MoneyAmount MONEY
 AS
-BEGIN
 	IF (SELECT COUNT(*) FROM Accounts WHERE Id = @AccountId) > 0
 	AND @MoneyAmount > 0
 		BEGIN
@@ -120,15 +119,14 @@ BEGIN
 			SET Balance += @MoneyAmount
 			WHERE Id = @AccountId
 		END 
-END
+
 
 GO
 
 --- 4.Withdraw Money ---
 GO
-CREATE PROC usp_WithdrawMoney @AccountId INT, @MoneyAmount MONEY
+CREATE PROCEDURE usp_WithdrawMoney @AccountId INT, @MoneyAmount MONEY
 AS
-BEGIN
 	IF (SELECT COUNT(*) FROM Accounts WHERE Id = @AccountId) > 0
 	AND @MoneyAmount > 0
 		BEGIN
@@ -136,35 +134,13 @@ BEGIN
 			SET Balance -= @MoneyAmount
 			WHERE Id = @AccountId
 		END 
-END
+
 GO
 
 
 --- 5.Money Transfer ---
-CREATE OR ALTER PROC usp_TransferMoney
-	(@SenderId INT, @ReceiverId INT, @Amount DECIMAL(18,4))
+CREATE OR ALTER PROC usp_TransferMoney @SenderId INT, @ReceiverId INT, @Amount MONEY
 AS
-DECLARE @SenderBalance DECIMAL(18,4);
-SET @SenderBalance = (SELECT Balance FROM Accounts as a WHERE a.AccountHolderId = @SenderId)
-BEGIN TRANSACTION
-	IF ( @SenderBalance >= @Amount AND @Amount >= 0)
-		BEGIN
-			UPDATE Accounts
-			SET Balance -= @Amount
-			WHERE Accounts.Id = @SenderId
-			UPDATE Accounts
-			SET Balance += @Amount
-			WHERE Accounts.Id = @ReceiverId
-		END
-	ELSE
-		BEGIN
-			ROLLBACK;
-			THROW 50002, 'Invalid transfer data', 1
-		END
-COMMIT
-GO
+	EXEC dbo.usp_WithdrawMoney @SenderId, @Amount
+	EXEC dbo.usp_DepositMoney @ReceiverId, @Amount
 
-EXEC usp_TransferMoney 5, 1, 20000
-
-SELECT * FROM Accounts
-SELECT * FROM Logs
