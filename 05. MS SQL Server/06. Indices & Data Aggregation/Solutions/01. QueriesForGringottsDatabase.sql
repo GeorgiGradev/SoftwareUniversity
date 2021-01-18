@@ -2,8 +2,8 @@ USE Gringotts
 
 --- 1.Records’ Count ---
 SELECT
-	COUNT(*)
-	FROM Gringotts.dbo.WizzardDeposits
+	COUNT(*) 
+	FROM WizzardDeposits
 
 --- 2. Longest Magic Wand ---
 SELECT 
@@ -164,8 +164,6 @@ SELECT
 
 
 --- 11.Average Interest ---
-
-
 SELECT 
 		wd.DepositGroup, 
 		wd.IsDepositExpired,
@@ -174,7 +172,6 @@ SELECT
 		WHERE wd.DepositStartDate > '01-01-1985'
 		GROUP BY wd.DepositGroup, wd.IsDepositExpired
 		ORDER BY wd.DepositGroup DESC
-
 
 
 --- 12.* Rich Wizard, Poor Wizard ---
