@@ -2,52 +2,45 @@ USE SoftUni
 
 --- 1.Employees with Salary Above 35000 ---
  GO
- CREATE OR ALTER PROCEDURE usp_GetEmployeesSalaryAbove35000 
+ CREATE PROCEDURE usp_GetEmployeesSalaryAbove35000 
  AS
- BEGIN
 	SELECT 
 		FirstName AS [First Name],
 		LastName AS [Last Name]
 		FROM Employees
 		WHERE Salary > 35000
-END
 --EXEC dbo.usp_GetEmployeesSalaryAbove35000
 
 
 --- 2.Employees with Salary Above Number ---
 GO
-CREATE OR ALTER PROC usp_GetEmployeesSalaryAboveNumber (@MinSalary DECIMAL(18,4))
+CREATE PROCEDURE usp_GetEmployeesSalaryAboveNumber (@MinSalary DECIMAL(18,4))
 AS 
-BEGIN
 	SELECT
 		FirstName AS [First Name],
 		LastName AS [LastName]
 		FROM Employees
 		WHERE Salary >= @MinSalary
-END
-GO 
-- EXEC dbo.usp_GetEmployeesSalaryAboveNumber 48100
+
+-- EXEC dbo.usp_GetEmployeesSalaryAboveNumber 48100
 
 
 --- 3.Town Names Starting With ---
 GO
-CREATE OR ALTER PROC usp_GetTownsStartingWith (@StartString NVARCHAR(20))
+CREATE PROC usp_GetTownsStartingWith (@StartString NVARCHAR(20))
 AS
-BEGIN
 	SELECT 
 	[Name]
 	FROM Towns
 	WHERE [Name] LIKE @StartString + '%'
-END
-GO
+
 --EXEC usp_GetTownsStartingWith 'be'
 
 
 --- 4.Employees from Town ---
 GO 
-CREATE OR ALTER PROC usp_GetEmployeesFromTown(@TownName NVARCHAR(MAX))
+CREATE PROCEDURE usp_GetEmployeesFromTown(@TownName NVARCHAR(MAX))
 AS
-BEGIN
 	SELECT 
 		e.FirstName,
 		e.LastName
@@ -55,14 +48,13 @@ BEGIN
 		JOIN Addresses AS a ON e.AddressID = a.AddressID
 		JOIN Towns AS t ON a.TownID = t.TownID
 		WHERE t.[Name] = @TownName
-END
-GO
+
 --EXEC usp_GetEmployeesFromTown 'Sofia'
 
 
 --- 5.Salary Level Function ---
 GO 
-CREATE OR ALTER FUNCTION ufn_GetSalaryLevel(@Salary DECIMAL(18,4)) 
+CREATE FUNCTION ufn_GetSalaryLevel(@Salary DECIMAL(18,4)) 
 RETURNS NVARCHAR(10)
 AS
 BEGIN
@@ -87,9 +79,8 @@ SELECT dbo.ufn_GetSalaryLevel (50001)
 
 --- 6.Employees by Salary Level ---
 GO
-CREATE OR ALTER PROC usp_EmployeesBySalaryLevel (@SalaryLevel NVARCHAR(8))
+CREATE PROCEDURE usp_EmployeesBySalaryLevel (@SalaryLevel NVARCHAR(8))
 AS
-BEGIN 
 	IF @SalaryLevel = 'Low'
 		SELECT 
 			FirstName AS [First Name],
@@ -108,7 +99,7 @@ BEGIN
 			LastName AS [Last Name]
 			FROM Employees
 			WHERE dbo.ufn_GetSalaryLevel ([Salary]) = 'High'
-END
+
 --EXECUTE dbo.usp_EmployeesBySalaryLevel 'High'
  
 
@@ -126,7 +117,7 @@ END
 
 --- 7.Define Function ---
 GO
-CREATE OR ALTER FUNCTION ufn_IsWordComprised(@SetOfLetters NVARCHAR(MAX), @Word NVARCHAR(MAX))
+CREATE FUNCTION ufn_IsWordComprised(@SetOfLetters NVARCHAR(MAX), @Word NVARCHAR(MAX))
 RETURNS BIT 
 AS
 BEGIN 
@@ -183,17 +174,15 @@ GO
 
 --- 8.* Delete Employees and Departments ---
 
-CREATE OR ALTER PROCEDURE usp_DeleteEmployeesFromDepartment (@departmentId INT)
+CREATE PROCEDURE usp_DeleteEmployeesFromDepartment (@departmentId INT)
 AS
-BEGIN
-	
 	-- 01. Delete employees from EmployeesProjects
 	DELETE FROM EmployeesProjects
 	WHERE EmployeeID IN (
 	                     SELECT EmployeeID FROM Employees
 	                     WHERE DepartmentID = @departmentId
 						)
-		                
+		            
 	-- 02. Set ManagerId to NULL in Employees
 	UPDATE Employees
 	SET ManagerID = NULL
@@ -228,8 +217,5 @@ BEGIN
 		FROM Employees 
 		WHERE DepartmentID = @departmentId
 
-END
 
-EXECUTE dbo.usp_DeleteEmployeesFromDepartment 16
-
-GO
+-- EXECUTE dbo.usp_DeleteEmployeesFromDepartment 16
