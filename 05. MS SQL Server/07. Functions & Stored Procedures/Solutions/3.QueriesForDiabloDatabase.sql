@@ -2,7 +2,7 @@ USE Diablo
 
 --- 13.*Scalar Function: Cash in User Games Odd Rows ---
 GO
-CREATE OR ALTER FUNCTION ufn_CashInUsersGames(@GameName NVARCHAR(50))
+CREATE FUNCTION ufn_CashInUsersGames(@GameName NVARCHAR(50))
 RETURNS TABLE 
 AS
 RETURN SELECT
