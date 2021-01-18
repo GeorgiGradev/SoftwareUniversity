@@ -102,76 +102,68 @@ END
 
 
 --- 7.*Massive Shopping ---
-GO
-CREATE PROC usp_BuyItemsFromLevelToLevel @username VARCHAR(50), 
-									     @gameName VARCHAR(50), 
-										 @startItemsLevel INT , 
-										 @endItemsLevel INT 
-AS
-BEGIN
+DECLARE @UserName VARCHAR(50) = 'Stamat'
+DECLARE @GameName VARCHAR(50) = 'Safflower'
+DECLARE @UserID INT = (SELECT Id
+                       FROM Users
+                       WHERE Username = @UserName)
+DECLARE @GameID INT = (SELECT Id
+                       FROM Games
+                       WHERE Name = @GameName)
+DECLARE @UserMoney MONEY = (SELECT Cash
+                            FROM UsersGames
+                            WHERE UserId = @UserID
+                              AND GameId = @GameID)
+DECLARE @ItemsTotalPrice MONEY
+DECLARE @UserGameID INT = (SELECT Id
+                           FROM UsersGames
+                           WHERE UserId = @UserID
+                             AND GameId = @GameID)
 
-	DECLARE @userGameId INT = (SELECT ug.Id
-							   FROM UsersGames AS ug
-							   JOIN Users AS u ON ug.UserId = u.Id
-							   JOIN Games AS g ON ug.GameId = g.Id
-							   WHERE u.Username = @username AND g.Name = @gameName
-							  )
-	
-	DECLARE @userGameLevel INT = (SELECT [Level]
-	                              FROM UsersGames
-	                              WHERE Id = @userGameId
-								 )
+BEGIN TRANSACTION
+    SET @ItemsTotalPrice = (SELECT SUM(Price) FROM Items WHERE MinLevel BETWEEN 11 AND 12)
 
-	DECLARE @money MONEY = (SELECT Cash
-						    FROM UsersGames
-						    WHERE Id = @userGameId
-						   )
-	DECLARE @itemsValue MONEY = (SELECT SUM(Price)
-								 FROM Items
-								 WHERE MinLevel BETWEEN @startItemsLevel AND @endItemsLevel
-								)
-	
-	IF @money >= @itemsValue AND @userGameLevel >= @endItemsLevel
-	
-	  BEGIN
-	    BEGIN TRANSACTION
-	    
-		UPDATE UsersGames
-	    SET Cash -= @itemsValue
-	    WHERE Id = @userGameId
-	    
-		IF (@@ROWCOUNT != 1)
-	      BEGIN
-	        ROLLBACK
-	        RAISERROR ('Could not make payment', 16, 1)
-	      END
-	    ELSE
-	      BEGIN
-	        INSERT INTO UserGameItems (ItemId, UserGameId)
-	          (SELECT Id, @userGameId
-	           FROM Items
-	           WHERE MinLevel BETWEEN @startItemsLevel AND @endItemsLevel
-			  )
-	
-	        IF (SELECT COUNT(*) FROM Items
-	            WHERE MinLevel BETWEEN @startItemsLevel AND @endItemsLevel
-			   ) != @@ROWCOUNT
-	          BEGIN
-	            ROLLBACK;
-	            RAISERROR ('Could not buy items', 16, 1)
-	          END
-	        ELSE COMMIT;
-	      END
-	  END
-END
+    IF (@UserMoney - @ItemsTotalPrice >= 0)
+        BEGIN
+            INSERT INTO UserGameItems
+            SELECT i.Id, @UserGameID
+            FROM Items AS i
+            WHERE i.Id IN (SELECT Id FROM Items WHERE MinLevel BETWEEN 11 AND 12)
 
-EXEC dbo.usp_BuyItemsFromLevelToLevel 'Stamat', 'Safflower', 11, 12
-EXEC dbo.usp_BuyItemsFromLevelToLevel 'Stamat', 'Safflower', 19, 21
+            UPDATE UsersGames
+            SET Cash -= @ItemsTotalPrice
+            WHERE GameId = @GameID
+              AND UserId = @UserID
+            COMMIT
+        END
+    ELSE
+        BEGIN
+            ROLLBACK
+        END
 
-SELECT i.Name AS [Item Name]
-FROM UserGameItems AS ugi
-JOIN Items AS i ON i.Id = ugi.ItemId
-JOIN UsersGames AS ug ON ug.Id = ugi.UserGameId
-JOIN Games AS g ON g.Id = ug.GameId
-WHERE g.Name = 'Safflower'
-ORDER BY [Item Name]
+    SET @UserMoney = (SELECT Cash FROM UsersGames WHERE UserId = @UserID AND GameId = @GameID)
+    BEGIN TRANSACTION
+        SET @ItemsTotalPrice = (SELECT SUM(Price) FROM Items WHERE MinLevel BETWEEN 19 AND 21)
+
+        IF (@UserMoney - @ItemsTotalPrice >= 0)
+            BEGIN
+                INSERT INTO UserGameItems
+                SELECT i.Id, @UserGameID
+                FROM Items AS i
+                WHERE i.Id IN (SELECT Id FROM Items WHERE MinLevel BETWEEN 19 AND 21)
+
+                UPDATE UsersGames
+                SET Cash -= @ItemsTotalPrice
+                WHERE GameId = @GameID
+                  AND UserId = @UserID
+                COMMIT
+            END
+        ELSE
+            BEGIN
+                ROLLBACK
+            END
+
+        SELECT Name AS [Item Name]
+        FROM Items
+        WHERE Id IN (SELECT ItemId FROM UserGameItems WHERE UserGameId = @userGameID)
+        ORDER BY [Item Name]
