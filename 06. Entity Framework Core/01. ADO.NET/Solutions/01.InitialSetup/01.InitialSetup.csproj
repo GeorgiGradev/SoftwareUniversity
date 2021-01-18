@@ -6,4 +6,8 @@
     <RootNamespace>_01.InitialSetup</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.1" />
+  </ItemGroup>
+
 </Project>
