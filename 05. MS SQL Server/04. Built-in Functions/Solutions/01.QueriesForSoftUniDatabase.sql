@@ -32,7 +32,7 @@ SELECT
 	[FirstName]
 	,[LastName]
 	FROM Employees
-	WHERE [JobTitle] NOT LIKE '%emgineer%' 
+	WHERE [JobTitle] NOT LIKE '%engineer%' 
 
 
 --- Problem 5.Find Towns with Name Length ---
