@@ -126,3 +126,75 @@ SELECT
 	JOIN Cities as c ON c.Id = h.CityId
 	ORDER BY FullName, Id
 
+
+---11.Available Room ---
+GO
+CREATE FUNCTION udf_GetAvailableRoom(@HotelId INT, @Date DATETIME, @People INT)
+RETURNS VARCHAR(Max)
+AS
+BEGIN
+	DECLARE @RoomPrice DECIMAL(18,2)
+	DECLARE	@BedsInRoom INT
+	DECLARE @RoomType VARCHAR(20)
+	DECLARE @RoomId INT
+	DECLARE @HotelBaseRate DECIMAL(18,2)
+
+	SET @RoomId  = 
+		(SELECT TOP(1)
+		r.Id as RoomId
+		FROM Hotels as h 
+		JOIN Rooms as r ON h.Id = r.HotelId
+		JOIN Trips as t ON r.Id = t.RoomId
+		WHERE (r.Id NOT IN (
+			SELECT 
+			Rooms.Id
+			FROM Hotels 
+			JOIN Rooms ON Hotels.Id = Rooms.HotelId 
+			JOIN Trips ON Rooms.Id = Trips.RoomId
+			WHERE 
+				(@Date BETWEEN FORMAT(Trips.ArrivalDate, 'yyyy-MM-dd') AND FORMAT(Trips.ReturnDate, 'yyyy-MM-dd'))))
+		AND t.CancelDate IS NULL 
+		AND h.Id = @HotelId AND r.Beds >= @People
+		
+		ORDER BY r.Price DESC)
+
+		IF (@RoomId IS NOT NULL)
+			BEGIN		
+				SET @RoomPrice = 
+					(SELECT
+						Price
+						FROM Rooms
+						WHERE Id = @RoomId)
+
+				SET @BedsInRoom =
+					(SELECT	
+						Beds
+						FROM Rooms
+						WHERE Id = @RoomId)
+
+				SET @RoomType =
+					(SELECT
+						Type
+						FROM Rooms
+						WHERE Id = @RoomId)
+
+				SET @HotelBaseRate =
+				(SELECT
+						BaseRate
+						FROM Hotels
+						JOIN Rooms ON Hotels.Id = Rooms.HotelId
+						WHERE Rooms.Id = @RoomId)
+			END
+		ELSE
+		 RETURN 'No rooms available';
+
+RETURN CONCAT('Room ', @RoomId,': ', @RoomType, ' (',@BedsInRoom, ' beds) - $',(@HotelBaseRate + @RoomPrice) * @People)
+END	
+GO
+
+
+SELECT dbo.udf_GetAvailableRoom(112, '2011-12-17', 2)
+SELECT dbo.udf_GetAvailableRoom(94, '2015-07-26', 3)
+
+
+--- 12. Switch Room --- 
