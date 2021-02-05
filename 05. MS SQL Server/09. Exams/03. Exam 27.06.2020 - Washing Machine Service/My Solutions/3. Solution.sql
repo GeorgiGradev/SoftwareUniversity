@@ -120,83 +120,85 @@ SELECT
 
 ---11.Place Order--- 
 GO
-CREATE OR ALTER PROC usp_PlaceOrder(@JobsId INT, @PartSerial VARCHAR(50), @Quantity INT)
-AS
+CREATE PROC usp_PlaceOrder(@JobId INT, @SerialNumber VARCHAR(50), @Quantity INT) AS
 BEGIN
-	IF @Quantity<=0
-		THROW 50012, 'Part quantity must be more than zero!', 1
-	ELSE IF NOT EXISTS(SELECT * FROM Jobs AS j WHERE j.JobId = @JobsId)
-		THROW 50013, 'Job not found!', 1
-	ELSE IF EXISTS(SELECT * FROM Jobs AS j WHERE j.JobId = @JobsId AND j.Status = 'Finished')
+	DECLARE @JobStatus VARCHAR(MAX) = (SELECT Status FROM Jobs WHERE JobId = @JobId)
+	DECLARE @JobExists BIT = (SELECT COUNT(JobId) FROM Jobs WHERE JobId = @JobId)
+	DECLARE @PartExists BIT = (SELECT COUNT(SerialNumber) FROM Parts WHERE SerialNumber = @SerialNumber)
+
+	IF(@Quantity <= 0)
+	BEGIN;
+		THROW 50012, 'Part quantity must be more than zero!' , 1
+	END
+
+	IF(@JobStatus = 'Finished')
+	BEGIN;
 		THROW 50011, 'This job is not active!', 1
-	ELSE IF NOT EXISTS(SELECT * FROM Parts AS p WHERE p.SerialNumber = @PartSerial)
+	END
+
+	IF(@JobExists = 0)
+	BEGIN;
+		THROW 50013, 'Job not found!', 1
+	END
+
+	IF(@PartExists = 0)
+	BEGIN;
 		THROW 50014, 'Part not found!', 1
+	END
 
-	DECLARE @PartId INT
-					SELECT
-						@PartId = p.PartId 
-						FROM Parts AS p
-						WHERE p.SerialNumber= @PartSerial
+	DECLARE @OrderForJobExists INT = 
+	(
+		SELECT COUNT(o.OrderId) FROM Orders AS o
+		WHERE o.JobId = @JobId AND o.IssueDate IS NULL
+	)
 
-	DECLARE @ExistingOrderId INT
-					SELECT 
-						@ExistingOrderId = o.OrderId 
-						FROM Orders AS o
-						JOIN Jobs AS j ON j.JobId = o.JobId
-						JOIN OrderParts AS op ON op.OrderId = o.OrderId
-						WHERE o.IssueDate IS NULL AND j.JobId = @JobsId AND op.PartId = @PartId
+	IF(@OrderForJobExists = 0)
+	BEGIN
+		INSERT INTO Orders VALUES
+		(@JobId, NULL, 0)
+	END
 
-	IF (@ExistingOrderId IS NULL)
-				BEGIN
-					INSERT INTO Orders(JobId, IssueDate)
-						VALUES
-							(
-							@JobsId, 
-							NULL
-							)
+	DECLARE @OrderId INT = 
+	(
+		SELECT o.OrderId FROM Orders AS o
+		WHERE o.JobId = @JobId AND o.IssueDate IS NULL
+	)
 
-					SELECT 
-						@ExistingOrderId = o.OrderId 
-						FROM Orders AS o 
-						JOIN Jobs AS j ON j.JobId = o.JobId
-						WHERE o.IssueDate IS NULL AND j.JobId = @JobsId
+	IF(@OrderId > 0 AND @PartExists = 1 AND @Quantity > 0)
+	BEGIN
+		DECLARE @PartId INT = (SELECT PartId FROM Parts WHERE SerialNumber = @SerialNumber)
+		DECLARE @PartExistsInOrder INT = (SELECT COUNT(*) FROM OrderParts WHERE OrderId = @OrderId AND PartId = @PartId)
 
-					INSERT INTO OrderParts(OrderId,PartId,Quantity)
-						VALUES
-						(
-						@ExistingOrderId, 
-						@PartId,
-						@Quantity
-						)
-				END
-	ELSE
-			BEGIN
-				UPDATE OrderParts
-					SET Quantity+=@Quantity
-					WHERE OrderId=@ExistingOrderId
-			END
+		IF(@PartExistsInOrder > 0)
+		BEGIN
+			UPDATE OrderParts
+			SET Quantity += @Quantity
+			WHERE OrderId = @OrderId AND PartId = @PartId
+		END
+		ELSE
+		BEGIN
+			INSERT INTO OrderParts VALUES
+			(@OrderId, @PartId, @Quantity)
+		END
+	END
 END
-
-
 
 ---12.Cost Of Order---
 GO
-CREATE FUNCTION udf_GetCost(@JobsId INT)
+CREATE OR ALTER FUNCTION udf_GetCost(@JobsId INT)
 RETURNS DECIMAL(18,2)
 AS
 BEGIN
 	DECLARE @TotalCost DECIMAL(18,2);
 
 	SET @TotalCost = ISNULL((SELECT 
-		SUM(p.Price) as Result
-		FROM Orders as o
-		JOIN OrderParts as op ON o.OrderId = op.OrderId
-		JOIN Parts as p ON op.PartId = p.PartId
-		WHERE o.JobId = @JobsId),0)
+							SUM(p.Price) as Result
+							FROM Orders as o
+							JOIN OrderParts as op ON o.OrderId = op.OrderId
+							JOIN Parts as p ON op.PartId = p.PartId
+							WHERE o.JobId = @JobsId), 0)
 			
+
 RETURN @TotalCost
 END
 GO
-
-SELECT dbo.udf_GetCost(1)
-
