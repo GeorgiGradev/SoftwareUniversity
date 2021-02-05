@@ -75,16 +75,13 @@ SELECT
 
 
 ---08.Available Mechanics---
-SELECT
-	Available
-	FROM (SELECT 
-		CONCAT(m.FirstName, ' ', m.LastName) as Available,
-		m.MechanicId
+SELECT 
+		CONCAT(m.FirstName, ' ', m.LastName) as Available
 		FROM Mechanics as m
 		LEFT JOIN Jobs as j ON m.MechanicId = j.MechanicId
 		WHERE j.Status  = 'Finished' OR j.Status IS NULL
-		GROUP BY CONCAT(m.FirstName, ' ', m.LastName), m.MechanicId) as temp
-	ORDER BY MechanicId
+		GROUP BY CONCAT(m.FirstName, ' ', m.LastName), m.MechanicId
+		ORDER BY m.MechanicId
 
 
 ---09.Past Expenses---
