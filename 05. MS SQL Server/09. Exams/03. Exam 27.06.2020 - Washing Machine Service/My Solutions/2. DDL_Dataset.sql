@@ -1,3 +1,6 @@
+GO
+USE WMS
+GO
 -- Disable referential integrity
 EXEC sp_MSForEachTable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'
 GO
@@ -5,8 +8,9 @@ GO
 EXEC sp_MSForEachTable 'DELETE FROM ?'
 GO
 
-EXEC sp_MSForEachTable 'DBCC CHECKIDENT(''?'', RESEED, 0)'
-GO
+EXEC sp_MSForEachTable
+    'IF OBJECT_ID(''?'') IN (SELECT OBJECT_ID FROM SYS.IDENTITY_COLUMNS)
+     DBCC CHECKIDENT(''?'', RESEED, 0)';
 
 -- Enable referential integrity 
 EXEC sp_MSForEachTable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'
