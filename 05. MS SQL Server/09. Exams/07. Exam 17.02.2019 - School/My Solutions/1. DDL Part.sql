@@ -60,3 +60,4 @@ CREATE TABLE StudentsTeachers
 	TeacherId	INT NOT NULL REFERENCES Teachers(Id)
 	PRIMARY KEY (StudentId, TeacherId)
 )
+
