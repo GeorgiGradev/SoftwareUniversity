@@ -119,3 +119,138 @@ FROM Peaks AS p
 JOIN Mountains AS m
 	ON p.MountainId = m.Id
 ORDER BY p.Elevation DESC, p.PeakName
+
+
+---09.Peaks with Mountain, Country and Continent---
+SELECT p.PeakName, m.MountainRange AS [Mountain], c.CountryName, cont.ContinentName
+FROM Peaks AS p
+JOIN Mountains AS m
+	ON p.MountainId = m.Id
+JOIN MountainsCountries AS mc
+	ON p.MountainId = mc.MountainId
+JOIN Countries AS c
+	ON c.CountryCode = mc.CountryCode
+JOIN Continents AS cont
+	ON cont.ContinentCode = c.ContinentCode
+ORDER BY p.PeakName, c.CountryName
+
+
+---10.Rivers by Country---
+SELECT c.CountryName, cont.ContinentName, COUNT(cr.RiverId) AS [RiversCount], 
+CASE
+	WHEN (SUM(r.Length) IS NULL) THEN 0
+	ELSE SUM(r.Length)
+END AS [TotalLength]
+FROM Countries AS c
+LEFT OUTER JOIN CountriesRivers AS cr
+	ON cr.CountryCode = c.CountryCode
+LEFT OUTER JOIN Rivers AS r
+	ON cr.RiverId = r.Id
+JOIN Continents AS cont
+	ON cont.ContinentCode = c.ContinentCode
+GROUP BY c.CountryName, cont.ContinentName
+ORDER BY COUNT(cr.RiverId) DESC, [TotalLength] DESC, c.CountryName
+
+
+---11.Count of Countries by Currency---
+SELECT curr.CurrencyCode, curr.Description AS [Currency], COUNT(c.CountryCode) AS [NumberOfCountries]
+FROM Currencies AS curr
+LEFT JOIN Countries AS c
+	ON curr.CurrencyCode = c.CurrencyCode
+GROUP BY curr.CurrencyCode, curr.Description
+ORDER BY [NumberOfCountries] DESC, [Currency]
+
+
+---12.Population and Area by Continent---
+SELECT cont.ContinentName, SUM(c.AreaInSqKm) AS [CountriesArea], SUM(CAST(C.Population AS BIGINT)) AS [CountriesPopulation]
+FROM Continents AS cont
+LEFT JOIN Countries AS c
+	ON cont.ContinentCode = c.ContinentCode
+GROUP BY cont.ContinentName
+ORDER BY [CountriesPopulation] DESC
+
+
+---13.Monasteries by Country---
+CREATE TABLE Monasteries (
+  Id INT PRIMARY KEY IDENTITY, 
+  Name VARCHAR (100) NOT NULL, 
+  CountryCode CHAR(2) FOREIGN KEY REFERENCES Countries(CountryCode))
+
+--SUB 2
+  INSERT INTO Monasteries(Name, CountryCode) VALUES
+('Rila Monastery “St. Ivan of Rila”', 'BG'), 
+('Bachkovo Monastery “Virgin Mary”', 'BG'),
+('Troyan Monastery “Holy Mother''s Assumption”', 'BG'),
+('Kopan Monastery', 'NP'),
+('Thrangu Tashi Yangtse Monastery', 'NP'),
+('Shechen Tennyi Dargyeling Monastery', 'NP'),
+('Benchen Monastery', 'NP'),
+('Southern Shaolin Monastery', 'CN'),
+('Dabei Monastery', 'CN'),
+('Wa Sau Toi', 'CN'),
+('Lhunshigyia Monastery', 'CN'),
+('Rakya Monastery', 'CN'),
+('Monasteries of Meteora', 'GR'),
+('The Holy Monastery of Stavronikita', 'GR'),
+('Taung Kalat Monastery', 'MM'),
+('Pa-Auk Forest Monastery', 'MM'),
+('Taktsang Palphug Monastery', 'BT'),
+('Sümela Monastery', 'TR')
+
+--SUB 3
+--ALTER TABLE Countries
+--ADD IsDeleted BIT NOT NULL DEFAULT 0
+
+--SUB 4
+UPDATE Countries
+SET [IsDeleted] = 1
+WHERE CountryCode IN(
+       SELECT a.Code 
+	     FROM (SELECT c.CountryCode AS Code, 
+		             COUNT(cr.RiverId) AS CountRivers FROM Countries AS c
+                JOIN CountriesRivers AS cr ON cr.CountryCode = c.CountryCode
+               GROUP BY c.CountryCode
+              ) AS a
+        WHERE a.CountRivers > 3)
+
+--SUB 5
+SELECT m.Name AS Monastery,
+       f.CountryName AS Country 
+	   FROM Monasteries AS m
+JOIN (SELECT * FROM Countries
+      WHERE IsDeleted = 0) AS f
+	  ON f.CountryCode = m.CountryCode
+ORDER BY m.Name
+
+
+---14.Monasteries by Continents and Countries---
+UPDATE Countries
+	SET CountryName = 'Burma'
+WHERE CountryName = 'Myanmar'
+
+INSERT INTO Monasteries (Name, CountryCode)
+(
+	SELECT 'Hanga Abbey',
+		    CountryCode
+	FROM Countries
+	WHERE CountryName='Tanzania'
+)
+
+INSERT INTO Monasteries (Name, CountryCode)
+  (SELECT
+     'Myin-Tin-Daik',
+     CountryCode
+   FROM Countries
+WHERE CountryName = 'Myanmar')
+
+SELECT cont.ContinentName, c.CountryName, COUNT(mon.Id) AS [MonasteriesCount]
+FROM Countries AS c
+JOIN Continents AS cont
+	ON c.ContinentCode = cont.ContinentCode
+LEFT JOIN Monasteries AS mon
+	ON c.CountryCode = mon.CountryCode
+WHERE c.IsDeleted = 0
+GROUP BY c.CountryName, cont.ContinentName
+ORDER BY [MonasteriesCount] DESC, c.CountryName
+
+
