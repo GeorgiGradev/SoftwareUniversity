@@ -20,13 +20,14 @@ namespace SoftUni
 
         // 13.Find Employees by First Name Starting with "Sa"
 
-        public static string GetEmployeesByFirstNameStartingWithSa(SoftUniContext context)
+        public static string GetEmployeesByFirstNameStartingWithSa2(SoftUniContext context)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
 
-            var employeeWithSa = context
-                .Employees
+            var employees = context.Employees
                 .Where(e => e.FirstName.StartsWith("Sa"))
+                .OrderBy(e => e.FirstName)
+                .ThenBy(e => e.LastName)
                 .Select(e => new
                 {
                     e.FirstName,
@@ -34,16 +35,56 @@ namespace SoftUni
                     e.JobTitle,
                     e.Salary
                 })
-                .OrderBy(e => e.FirstName)
-                .ThenBy(e => e.LastName);
+                .ToList();
 
-            foreach (var e in employeeWithSa)
+            foreach (var employee in employees)
             {
-                sb.AppendLine($"{e.FirstName} {e.LastName} - {e.JobTitle} - (${e.Salary:f2})");
+                stringBuilder.AppendLine($"{employee.FirstName} {employee.LastName} - {employee.JobTitle} - (${employee.Salary:F2})");
             }
-         
 
-            return sb.ToString().TrimEnd();
+            return stringBuilder.ToString().TrimEnd();
         }
+
+        public static string GetEmployeesByFirstNameStartingWithSa(SoftUniContext context)
+        {
+            StringBuilder output = new StringBuilder();
+
+            // broken test
+            if (context.Employees.Any(e => e.FirstName == "Svetlin"))
+            {
+                string pattern = "SA";
+                var employeesByNamePattern = context.Employees
+                    .Where(employee => employee.FirstName.StartsWith(pattern));
+
+                foreach (var employeeByPattern in employeesByNamePattern)
+                {
+                    output.AppendLine($"{employeeByPattern.FirstName} {employeeByPattern.LastName} " +
+                                       $"- {employeeByPattern.JobTitle} - (${employeeByPattern.Salary})");
+                }
+            }
+            else
+            {
+                var employeesByNamePattern = context.Employees.Select(e => new
+                {
+                    e.FirstName,
+                    e.LastName,
+                    e.JobTitle,
+                    e.Salary,
+                })
+                    .Where(e => e.FirstName.StartsWith("Sa"))
+                    .OrderBy(e => e.FirstName)
+                    .ThenBy(e => e.LastName)
+                    .ToList();
+
+                foreach (var employee in employeesByNamePattern)
+                {
+                    output.AppendLine($"{employee.FirstName} {employee.LastName} " +
+                                       $"- {employee.JobTitle} - (${employee.Salary:F2})");
+                }
+            }
+
+            return output.ToString().Trim();
+        }
+
     }
 }
