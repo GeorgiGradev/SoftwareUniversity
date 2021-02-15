@@ -22,32 +22,46 @@ namespace SoftUni
 
         public static string IncreaseSalaries(SoftUniContext context)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
 
-            var employees = context
-                 .Employees
-                 .Where(e => e.Department.Name == "Engineering"
-                 || e.Department.Name == "Tool Design"
-                 || e.Department.Name == "Marketing "
-                 || e.Department.Name == "Information Services")
-                .OrderBy(x => x.FirstName)
-                .ThenBy(x => x.LastName);
+            var salaryIncreasement = 1.12M;
 
-            foreach (Employee e in employees)
+            var targetingDepartments = new string[]
             {
-                e.Salary *= 1.12m;
+                "Engineering",
+                "Tool Design",
+                "Marketing",
+                "Information Services"
+            };
+
+            var targetingEmployees = context.Employees
+                .Where(e => targetingDepartments.Contains(e.Department.Name))
+                .ToList();
+
+            foreach (var employee in targetingEmployees)
+            {
+                employee.Salary *= salaryIncreasement;
             }
+
             context.SaveChanges();
 
-            var employeesToList = employees.ToList();
+            var employees = targetingEmployees
+                .Select(e => new
+                {
+                    e.FirstName,
+                    e.LastName,
+                    e.Salary
+                })
+                .OrderBy(e => e.FirstName)
+                .ThenBy(e => e.LastName)
+                .ToList();
 
-            foreach (var e in employeesToList)
+            foreach (var employee in employees)
             {
-                sb.AppendLine($"{e.FirstName} {e.LastName} (${e.Salary:f2})");
+                stringBuilder.AppendLine($"{employee.FirstName} {employee.LastName} (${employee.Salary:f2})");
             }
-         
 
-            return sb.ToString().TrimEnd();
+            return stringBuilder.ToString().TrimEnd();
         }
     }
 }
