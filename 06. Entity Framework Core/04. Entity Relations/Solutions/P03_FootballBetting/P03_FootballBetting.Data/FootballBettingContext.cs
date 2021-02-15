@@ -43,12 +43,11 @@ namespace P03_FootballBetting.Data
             TownModelBuilder(modelBuilder);
             CountryModelBuilder(modelBuilder);
             PlayerModelBuilder(modelBuilder);
-            POsitionModelBuilder(modelBuilder);
+            PositionModelBuilder(modelBuilder);
             PlayerStatisticModelBuilder(modelBuilder);
             GameModelBuilder(modelBuilder);
             BetModelBuilder(modelBuilder);
             UserModelBuilder(modelBuilder);
-
         }
 
         private static void UserModelBuilder(ModelBuilder modelBuilder)
@@ -56,6 +55,9 @@ namespace P03_FootballBetting.Data
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.UserId);
+		
+		        entity.Property(u => u.Username)
+                .IsRequired(true);
 
                 entity.Property(u => u.Name)
                 .HasMaxLength(50)
@@ -128,10 +130,14 @@ namespace P03_FootballBetting.Data
                     .HasOne(ps => ps.Game)
                     .WithMany(g => g.PlayerStatistics)
                     .HasForeignKey(ps => ps.GameId);
+
+                entity
+                    .Property(ps => ps.MinutesPlayed)
+                    .IsRequired(true);
             });
         }
 
-        private static void POsitionModelBuilder(ModelBuilder modelBuilder)
+        private static void PositionModelBuilder(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Position>(entity =>
             {
