@@ -3,13 +3,13 @@ using SoftUni.Models;
 
 namespace SoftUni.Data
 {
-    public partial class SoftuniContext : DbContext
+    public partial class SoftUniContext : DbContext
     {
-        public SoftuniContext()
+        public SoftUniContext()
         {
         }
 
-        public SoftuniContext(DbContextOptions<SoftuniContext> options)
+        public SoftUniContext(DbContextOptions<SoftUniContext> options)
             : base(options)
         {
         }
