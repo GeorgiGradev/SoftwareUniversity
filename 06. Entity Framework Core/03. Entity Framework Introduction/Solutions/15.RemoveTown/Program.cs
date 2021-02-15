@@ -22,36 +22,28 @@ namespace SoftUni
 
         public static string RemoveTown(SoftUniContext context)
         {
-            var employeesInSeattle = context
-                .Employees
-                .Where(e => e.Address.Town.Name == "Seattle");
+            var townNameToDelete = "Seattle";
 
-            int addressesCount = employeesInSeattle.Count();
+            var townToDelete = context.Towns
+                .Where(t => t.Name == townNameToDelete)
+                .FirstOrDefault();
 
-            foreach (var e in employeesInSeattle)
-            {
-                e.AddressId = null;
-            }
+            var targetingAddresses = context.Addresses
+                .Where(a => a.Town.Name == townNameToDelete)
+                .ToList();
 
-            var addressesToRemove = context
-                .Addresses
-                .Where(a => a.Town.Name == "Seattle");
+            var employeesLivingOnTargetingAddresses = context.Employees
+                .Where(e => targetingAddresses.Contains(e.Address))
+                .ToList();
 
-            foreach (var a in addressesToRemove)
-            {
-                context.Remove(a);
-            }
-
-            var townToRemove = context
-                .Towns
-                .Where(t => t.Name == "Seattle")
-                .Single();
-
-            context.Remove(townToRemove);
+            employeesLivingOnTargetingAddresses.ForEach(e => e.Address = null);
+            targetingAddresses.ForEach(a => context.Remove(a));
+            context.Remove(townToDelete);
 
             context.SaveChanges();
 
-            return $"{addressesCount} addresses in Seattle were deleted";
+            return $"{targetingAddresses.Count} addresses in Seattle were deleted";
+
         }
     }
 }
