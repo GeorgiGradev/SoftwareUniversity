@@ -20,38 +20,38 @@ namespace CarDealer
         public static void Main(string[] args)
         {
             using CarDealerContext context = new CarDealerContext();
-            // CreateDatabase(context);
+             CreateDatabase(context);
 
             //09
-            //string inputXml = File.ReadAllText("../../../Datasets/suppliers.xml");
-            //Console.WriteLine(ImportSuppliers(context, inputXml));
+            string inputXml = File.ReadAllText("../../../Datasets/suppliers.xml");
+            Console.WriteLine(ImportSuppliers(context, inputXml));
 
             //10
-            string inputXml = File.ReadAllText("../../../Datasets/Parts.xml");
-            Console.WriteLine(ImportParts(context, inputXml));
+            //string inputXml = File.ReadAllText("../../../Datasets/Parts.xml");
+            //Console.WriteLine(ImportParts(context, inputXml));
         }
 
         //10. Import Parts
-        public static string ImportParts(CarDealerContext context, string inputXml)
-        {
-            var partsResult = XMLConverter.Deserializer<ImportPartsDTO>(inputXml, "Parts");
+        //public static string ImportParts(CarDealerContext context, string inputXml)
+        //{
+        //    var partsResult = XMLConverter.Deserializer<ImportPartsDTO>(inputXml, "Parts");
 
-            var parts = partsResult
-                .Where(x => context.Suppliers.Any(s => s.Id == x.SupplierId))
-                .Select(x => new Part
-                {
-                    Name = x.Name,
-                    Price = x.Price,
-                    Quantity = x.Quantity,
-                    SupplierId = x.SupplierId
-                })
-                .ToList();
+        //    var parts = partsResult
+        //        .Where(x => context.Suppliers.Any(s => s.Id == x.SupplierId))
+        //        .Select(x => new Part
+        //        {
+        //            Name = x.Name,
+        //            Price = x.Price,
+        //            Quantity = x.Quantity,
+        //            SupplierId = x.SupplierId
+        //        })
+        //        .ToList();
 
-            context.Parts.AddRange(parts);
-            context.SaveChanges();
+        //    context.Parts.AddRange(parts);
+        //    context.SaveChanges();
 
-            return $"Successfully imported {parts.Count}";
-        }
+        //    return $"Successfully imported {parts.Count}";
+        //}
 
 
         //09. Import Suppliers
